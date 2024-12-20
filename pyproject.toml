@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "photoshare"
+version = "0.1.0"
+description = ""
+authors = ["N0yhz <vutunhzyonh@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = {extras = ["email"], version = "^2.10.4"}
+fastapi = "^0.115.6"
+slowapi = "^0.1.9"
+fastapi-mail = "^1.4.2"
+sqlalchemy = "^2.0.36"
+uvicorn = "^0.34.0"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
