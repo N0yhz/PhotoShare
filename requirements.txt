@@ -1,0 +1,15 @@
+slowapi
+fastapi
+fastapi-mail
+sqlalchemy
+uvicorn
+bcrypt
+python-dotenv
+pydantic[email]
+passlib[bcrypt]
+python-jose[cryptography]
+python-multipart
+psycopg2-binary
+cloudinary
+redis
+alembic
