@@ -6,8 +6,10 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Enum, Boolean, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import DeclarativeBase
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class RoleEnum(enum.Enum):
     admin: str = "admin"
@@ -45,7 +47,7 @@ class User(Base):
     last_name: Mapped[Optional[str]] = mapped_column(String(50))
     bio: Mapped[Optional[str]] = mapped_column(String(155), nullable=True)
 
-    #relationships
+    # relationships
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     
@@ -95,7 +97,7 @@ class Comment(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     post_id: Mapped[int] = mapped_column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))
 
-    #relationship
+    # relationship
     user: Mapped["User"] = relationship(back_populates="comments")
     post: Mapped["Post"] = relationship(back_populates="comments")
 

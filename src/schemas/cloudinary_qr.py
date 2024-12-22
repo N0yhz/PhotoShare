@@ -8,4 +8,4 @@ class ImageUploadRequest(BaseModel):
 
 class ImageResponse(BaseModel):
     image_url: HttpUrl
-    qr_code_url: HttpUrl
+    qr_code_url: Optional[HttpUrl] = None

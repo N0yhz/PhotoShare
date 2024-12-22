@@ -1,10 +1,16 @@
 import os
 import uvicorn
 from fastapi import FastAPI
-from src.routes.image_routes import router as image_router
+from src.routes.cloudinary_routes import router as image_router
+# from src.routes.auth import router as auth_router
 
 app = FastAPI()
+
+# Include the image routes
 app.include_router(image_router, prefix="/images", tags=["Images"])
+
+# Include the auth routes
+# app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
 
 
 @app.get("/")
