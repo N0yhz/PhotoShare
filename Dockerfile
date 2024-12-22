@@ -1,10 +1,15 @@
-FROM python:3.9
+FROM python:3.12
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install poetry 
+
+COPY poetry.lock pyproject.toml ./
+
+RUN poetry install --no-root
 
 COPY . .
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "-reload"]
+RUN poetry run pip install uvicorn
+
+CMD ["poetry", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "-reload"]
