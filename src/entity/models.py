@@ -6,8 +6,10 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Enum, Boolean, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import DeclarativeBase
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class RoleEnum(enum.Enum):
     admin: str = "admin"
