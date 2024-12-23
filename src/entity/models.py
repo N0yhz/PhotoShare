@@ -63,9 +63,8 @@ class Post(Base):
 class Tag(Base):
     __tablename__ = "tags"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True)
-
     posts: Mapped[List["Post"]] = relationship(secondary=posts_tags, back_populates="tags")
 
 class Comment(Base):
