@@ -19,7 +19,7 @@ class UserRepository:
             email=user_create.email, 
             hashed_password=hashed_password, 
             role_id = user_role.id, 
-            is_active=False
+            is_verified=False
         )
         self.session.add(new_user)
         await self.session.commit()

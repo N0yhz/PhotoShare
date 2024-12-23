@@ -1,25 +1,25 @@
-version: '3.12'
-services:
-  app:
-    build: .
-    command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    volumes:
-      - .:/app
-    ports:
-      - 8000:8000
-    depends_on:
-      - db
-    env_file:
+  version: '3.12'
+  services:
+    app:
+      build: .
+      command: poetry run uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      volumes:
+        - .:/app
+      ports:
+        - 8000:8000
+      depends_on:
+        - db
+      env_file:
+        - .env
+
+    db:
+      image: postgres:13
+      env_file:
       - .env
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      ports:
+      - "5432:5432"
 
-  db:
-    image: postgres:13
-    env_file:
-     - .env
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-     - "5432:5432"
-
-volumes:
-  postgres_data:
+  volumes:
+    postgres_data:

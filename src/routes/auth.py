@@ -11,7 +11,7 @@ from src.services.utils import create_access_token, create_refresh_token, decode
 
 
 router = APIRouter()
-env = Environment(loader=FileSystemLoader("src/services/templates"))
+# env = Environment(loader=FileSystemLoader("src/services/templates"))
 
 
 @router.post("/register", response_model=UserResponse)
