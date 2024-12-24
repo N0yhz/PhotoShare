@@ -6,13 +6,16 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Enum, Boolean, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import DeclarativeBase
 
+
 class Base(DeclarativeBase):
     pass
 
-class Role(enum.Enum):
+
+class RoleEnum(enum.Enum):
     admin: str = "admin"
     moderator: str = "moderator"
     user: str = "user"
+    
 
 posts_tags= Table(
     "posts_tags",
@@ -20,6 +23,14 @@ posts_tags= Table(
     Column("post_id", Integer, ForeignKey("posts.id", ondelete="CASCADE")),
     Column("tag_id", Integer, ForeignKey("tags.id", ondelete="CASCADE"))
 )
+
+
+class Role(Base):
+    __tablename__ = "roles"
+    
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    name: Mapped[str] = mapped_column(String, unique=True)
+    
 
 class User(Base):
     __tablename__ = 'users'
@@ -30,7 +41,7 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     verification_token: Mapped[str] = mapped_column(String(155), nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
-    role: Mapped[Enum] = mapped_column("role", Enum(Role), default=Role.user, nullable=True)
+    role_id: Mapped[int] = mapped_column(Integer, ForeignKey("roles.id"), nullable=True, default=1)
     avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     first_name: Mapped[Optional[str]] = mapped_column(String(50))
     last_name: Mapped[Optional[str]] = mapped_column(String(50))
@@ -39,6 +50,8 @@ class User(Base):
     #relationships
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    role: Mapped["Role"] = relationship("Role", lazy="selectin")
+    
 
 class Post(Base):
     __tablename__ = 'posts'
@@ -60,12 +73,14 @@ class Post(Base):
     tags: Mapped[List["Tag"]] = relationship(secondary=posts_tags, back_populates="posts")
     transformations: Mapped[List["Transformation"]] = relationship(back_populates="post", cascade="all, delete-orphan")
 
+
 class Tag(Base):
     __tablename__ = "tags"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True)
     posts: Mapped[List["Post"]] = relationship(secondary=posts_tags, back_populates="tags")
+
 
 class Comment(Base):
     __tablename__ = "comments"
@@ -86,6 +101,7 @@ class Comment(Base):
     user: Mapped["User"] = relationship(back_populates="comments")
     post: Mapped["Post"] = relationship(back_populates="comments")
 
+
 class Transformation(Base):
     __tablename__ = "transformations"
 
@@ -100,6 +116,7 @@ class Transformation(Base):
 
     post: Mapped["Post"] = relationship(back_populates="transformations")
     qr_codes: Mapped["QRCode"] = relationship(back_populates="transformation", cascade="all, delete-orphan")
+
 
 class QRCode(Base):
     __tablename__ = "qr_codes"
