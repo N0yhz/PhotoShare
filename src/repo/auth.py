@@ -5,7 +5,6 @@ from src.entity.models import User, RoleEnum, Role
 from src.services.pass_utils import get_password_hash
 
 
-
 class UserRepository:
     def __init__(self, session):
         self.session = session

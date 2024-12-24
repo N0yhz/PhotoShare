@@ -47,7 +47,7 @@ class User(Base):
     last_name: Mapped[Optional[str]] = mapped_column(String(50))
     bio: Mapped[Optional[str]] = mapped_column(String(155), nullable=True)
 
-    #relationships
+    # relationships
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     role: Mapped["Role"] = relationship("Role", lazy="selectin")
@@ -97,7 +97,7 @@ class Comment(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     post_id: Mapped[int] = mapped_column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))
 
-    #relationship
+    # relationship
     user: Mapped["User"] = relationship(back_populates="comments")
     post: Mapped["Post"] = relationship(back_populates="comments")
 
