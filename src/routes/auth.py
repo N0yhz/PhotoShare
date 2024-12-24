@@ -74,23 +74,24 @@ async def get_my_data(user: UserResponse = Depends(get_current_user)):
 
 @router.post("/change_role")
 async def change_role(
-    username: str, role_id: int, db: AsyncSession = Depends(get_db), user: User = Depends(RoleChecker([RoleEnum.admin])),
+    username: str, 
+    role_id: int,
+    db: AsyncSession = Depends(get_db), 
+    user: User = Depends(RoleChecker([RoleEnum.admin])),
 ):
     user_repo = UserRepository(db)
     role_repo = RoleRepository(db)
     
-    target_user = await user_repo.get_user_by_username(username)
-    if not target_user:
+    user = await user_repo.get_user_by_username(username)
+    if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
     role = await role_repo.get_role_by_id(role_id)
     if not role:
         raise HTTPException(status_code=400, detail="Invalid role ID")
     
-    target_user.role_id = role.id
+    user.role_id = role.id
     await db.commit()
-
-    return {"message": f"Role of user {target_user.username} changed successfully to {role.name}"}
     
-
-
+    return {"message": f"Role of user {user.username} changed successfully to {role.name}"}
+    

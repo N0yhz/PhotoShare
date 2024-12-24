@@ -42,7 +42,6 @@ class User(Base):
     verification_token: Mapped[str] = mapped_column(String(155), nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
     role_id: Mapped[int] = mapped_column(Integer, ForeignKey("roles.id"), nullable=True, default=1)
-    role: Mapped["Role"] = relationship("Role", lazy="selectin")
     # role: Mapped[Enum] = mapped_column("role", Enum(RoleEnum), default=RoleEnum.user, nullable=True)
     avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     first_name: Mapped[Optional[str]] = mapped_column(String(50))
@@ -52,6 +51,7 @@ class User(Base):
     #relationships
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    role: Mapped["Role"] = relationship("Role", lazy="selectin")
     
 
 class Post(Base):
