@@ -48,6 +48,18 @@ class UserRepository:
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)
+        
+    async def change_user_role(self, user: User, role: Role):
+        user.role_id = role.id
+        self.session.add(user)
+        await self.session.commit()
+        await self.session.refresh(user)
+        
+        # user.role_id = role.id
+        # await db.commit()
+        
+        return {"message": f"Role of {user.username} changed successfully to {user.role.name}"}
+    
 
     
 class RoleRepository:

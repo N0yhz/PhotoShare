@@ -12,11 +12,13 @@ async def read_secret(
 ):
     return {"message": "Secret message for all authenticated users"}
 
+
 @router.get("/secret_for_moderators")
 async def read_secret(
     user: User = Depends(RoleChecker([RoleEnum.moderator, RoleEnum.admin])),
 ):
     return {"message": "Secret message for moderators"}
+
 
 @router.get("/secret_for_admin")
 async def read_secret(

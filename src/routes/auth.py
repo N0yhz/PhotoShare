@@ -82,16 +82,14 @@ async def change_role(
     user_repo = UserRepository(db)
     role_repo = RoleRepository(db)
     
-    user = await user_repo.get_user_by_username(username)
-    if not user:
+    target_user = await user_repo.get_user_by_username(username)
+    if not target_user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    role = await role_repo.get_role_by_id(role_id)
-    if not role:
+    target_role = await role_repo.get_role_by_id(role_id)
+    if not target_user:
         raise HTTPException(status_code=400, detail="Invalid role ID")
     
-    user.role_id = role.id
-    await db.commit()
+    return await user_repo.change_user_role(target_user, target_role)
     
-    return {"message": f"Role of user {user.username} changed successfully to {role.name}"}
     
