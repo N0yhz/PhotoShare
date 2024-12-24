@@ -1,17 +1,16 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
-from jinja2 import Environment, FileSystemLoader
 
+from src.entity.models import RoleEnum, User
 from src.services.pass_utils import verify_password
 from src.schemas.auth import UserCreate, UserResponse, Token
-from src.repo.auth import UserRepository
+from src.repo.auth import RoleRepository, UserRepository
 from src.database.db import get_db
-from src.services.utils import create_access_token, create_refresh_token, decode_access_token
+from src.services.utils import RoleChecker, create_access_token, create_refresh_token, decode_access_token, get_current_user
 
 
 router = APIRouter()
-# env = Environment(loader=FileSystemLoader("src/services/templates"))
 
 
 @router.post("/register", response_model=UserResponse)
@@ -66,4 +65,32 @@ async def refresh_tokens(refresh_token: str, db: AsyncSession = Depends(get_db))
     return Token(
         access_token=access_token, refresh_token=refresh_token, token_type="bearer"
     )
+    
+
+@router.get("/my_info")
+async def get_my_data(user: UserResponse = Depends(get_current_user)):
+    return {"role": user.role.name, "username": user.username, "email": user.email}
+
+
+@router.post("/change_role")
+async def change_role(
+    username: str, role_id: int, db: AsyncSession = Depends(get_db), user: User = Depends(RoleChecker([RoleEnum.admin])),
+):
+    user_repo = UserRepository(db)
+    role_repo = RoleRepository(db)
+    
+    target_user = await user_repo.get_user_by_username(username)
+    if not target_user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    role = await role_repo.get_role_by_id(role_id)
+    if not role:
+        raise HTTPException(status_code=400, detail="Invalid role ID")
+    
+    target_user.role_id = role.id
+    await db.commit()
+
+    return {"message": f"Role of user {target_user.username} changed successfully to {role.name}"}
+    
+
 

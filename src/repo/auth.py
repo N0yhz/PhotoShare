@@ -12,7 +12,14 @@ class UserRepository:
 
     async def create_user(self, user_create: UserCreate):
         hashed_password = get_password_hash(user_create.password)
-        user_role = await RoleRepository(self.session).get_role_by_name(RoleEnum.user)
+        
+        existing_users = await self.session.execute(select(User).limit(1))
+        users_exist = existing_users.scalars().first() is not None
+        
+        if not users_exist:
+            user_role = await RoleRepository(self.session).get_role_by_name(RoleEnum.admin)
+        else:
+            user_role = await RoleRepository(self.session).get_role_by_name(RoleEnum.user)
         
         new_user = User(
             username=user_create.username, 
@@ -49,5 +56,10 @@ class RoleRepository:
 
     async def get_role_by_name(self, name: RoleEnum):
         query = select(Role).where(Role.name == name.value)
+        result = await self.session.execute(query)
+        return result.scalar_one_or_none()
+    
+    async def get_role_by_id(self, role_id):
+        query = select(Role).where(Role.id == role_id)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
