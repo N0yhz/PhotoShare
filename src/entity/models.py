@@ -6,8 +6,10 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String, Enum, Boolean, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.orm import DeclarativeBase
 
+
 class Base(DeclarativeBase):
     pass
+
 
 class RoleEnum(enum.Enum):
     admin: str = "admin"
@@ -39,15 +41,16 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     verification_token: Mapped[str] = mapped_column(String(155), nullable=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
-    role: Mapped[Enum] = mapped_column("role", Enum(RoleEnum), default=RoleEnum.user, nullable=True)
+    role_id: Mapped[int] = mapped_column(Integer, ForeignKey("roles.id"), nullable=True, default=1)
     avatar: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     first_name: Mapped[Optional[str]] = mapped_column(String(50))
     last_name: Mapped[Optional[str]] = mapped_column(String(50))
     bio: Mapped[Optional[str]] = mapped_column(String(155), nullable=True)
 
-    #relationships
+    # relationships
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
+    role: Mapped["Role"] = relationship("Role", lazy="selectin")
     
 
 class Post(Base):
@@ -74,9 +77,8 @@ class Post(Base):
 class Tag(Base):
     __tablename__ = "tags"
 
-    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), unique=True)
-
     posts: Mapped[List["Post"]] = relationship(secondary=posts_tags, back_populates="tags")
 
 
@@ -95,7 +97,7 @@ class Comment(Base):
     user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     post_id: Mapped[int] = mapped_column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))
 
-    #relationship
+    # relationship
     user: Mapped["User"] = relationship(back_populates="comments")
     post: Mapped["Post"] = relationship(back_populates="comments")
 

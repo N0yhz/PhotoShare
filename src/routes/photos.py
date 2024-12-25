@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, status, Depends, HTTPException, Query
 from fastapi_limiter.depends import RateLimiter
 
@@ -5,9 +6,11 @@ from src.schemas.photos import ResponsePost, CreatePost
 from sqlalchemy.orm import Session
 from src.database.db import get_db
 from src.repo import photos as repository_photos
-from typing import List
 from src.entity.models import User
 from src.services.utils import get_current_user
+from src.services.utils import RoleChecker
+from src.entity.models import RoleEnum, User
+
 
 router = APIRouter(prefix='/posts', tags=["posts"], dependencies=[Depends(get_current_user)])
 
@@ -62,3 +65,24 @@ async def create_post(body: CreatePost,
                       current_user: User = Depends(get_current_user)):
     user_id = current_user.id
     return await repository_photos.create_post(body, user_id, db)
+=======
+
+@router.get("/secret_for_all")
+async def read_secret(
+    user: User = Depends(RoleChecker([RoleEnum.user, RoleEnum.moderator, RoleEnum.admin])),
+):
+    return {"message": "Secret message for all authenticated users"}
+
+
+@router.get("/secret_for_moderators")
+async def read_secret(
+    user: User = Depends(RoleChecker([RoleEnum.moderator, RoleEnum.admin])),
+):
+    return {"message": "Secret message for moderators"}
+
+
+@router.get("/secret_for_admin")
+async def read_secret(
+    user: User = Depends(RoleChecker([RoleEnum.admin])),
+):
+    return {"message": "Secret message for admin"}
