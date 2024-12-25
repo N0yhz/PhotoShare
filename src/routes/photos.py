@@ -25,5 +25,3 @@ async def read_secret(
     user: User = Depends(RoleChecker([RoleEnum.admin])),
 ):
     return {"message": "Secret message for admin"}
-
-

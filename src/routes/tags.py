@@ -4,9 +4,9 @@ from sqlalchemy.orm import Session
 
 from src.database.db import get_db
 from src.entity.models import Tag
-from src.schemas import TagOut, TagCreate
+from src.schemas.tags import TagOut, TagCreate
 
-router = APIRouter(prefix='/tags', tags=["tags"])
+router = APIRouter()
 
 
 @router.post("", response_model=TagOut)

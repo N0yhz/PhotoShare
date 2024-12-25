@@ -1,25 +1,17 @@
-
 import uvicorn
 from fastapi import FastAPI
-from src.routes import tags, posts
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.routes.auth import router as auth_router
-from src.routes.photos import router as photos_router
-from src.routes.cloudinary_routes import router as image_router
-# Include the image routes
-app.include_router(image_router, prefix="/images", tags=["Images"])
-
-# Include the auth routes
-# app.include_router(auth_router, prefix="/auth", tags=["Authentication"])
-
+from src.routes import tags, posts, comments, cloudinary_routes, auth, photos
 
 app = FastAPI()
 
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
-app.include_router(photos_router, prefix="/photos", tags=["photos"])
-app.include_router(tags.router, prefix='/api')
-app.include_router(posts.router, prefix='/api')
+app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
+app.include_router(photos.router, prefix="/api/photos", tags=["Photos"])
+app.include_router(tags.router, prefix='/api/tags', tags=["Tags"])
+app.include_router(posts.router, prefix='/api/posts', tags=["Posts"])
+app.include_router(cloudinary_routes.router, prefix="/images", tags=["Images"])
+app.include_router(comments.router, prefix="/comments", tags=["Comments"])
 
 app.add_middleware(
     CORSMiddleware,

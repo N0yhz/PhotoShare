@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
 from src.entity.models import User, RoleEnum
-from src.repo.auth import UserRepository
+from src.repository.auth import UserRepository
 from src.schemas.auth import TokenData
 
 
@@ -21,7 +21,7 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 VERIFICATION_TOKEN_EXPIRE_HOURS = 24
 
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl="auth/token")
+oauth2_schema = OAuth2PasswordBearer(tokenUrl="api/auth/token")
 
 
 def create_verification_token(email: str) -> str:

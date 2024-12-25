@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.entity.models import RoleEnum, User
 from src.services.pass_utils import verify_password
 from src.schemas.auth import UserCreate, UserResponse, Token
-from src.repo.auth import RoleRepository, UserRepository
+from src.repository.auth import RoleRepository, UserRepository
 from src.database.db import get_db
 from src.services.utils import RoleChecker, create_access_token, create_refresh_token, decode_access_token, get_current_user
 
@@ -16,10 +16,8 @@ router = APIRouter()
 @router.post("/register", response_model=UserResponse)
 async def register(
     user_create: UserCreate, 
-    background_tasks: BackgroundTasks, 
     db: AsyncSession = Depends(get_db)
 ):
-    
     user_repo = UserRepository(db)
     user = await user_repo.get_user_by_email(user_create.email)
     

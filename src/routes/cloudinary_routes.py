@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from src.database.db import get_db
 from src.entity.models import Post, Transformation
 import requests
-from src.services.cloudinary import upload_image
+from src.services.cloudinary import CloudinaryService
 from src.services.qr_code import generate_qr_code
 from src.schemas.cloudinary_qr import ImageResponse
 import shutil
@@ -29,7 +29,7 @@ async def upload_image_to_cloudinary(file: UploadFile = File(...)):
 
     # Upload the image to Cloudinary
     try:
-        image_url = upload_image(temp_file)
+        image_url = CloudinaryService.upload_image(temp_file)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")
     finally:
@@ -82,7 +82,7 @@ async def transform_image_with_cloudinary(
 
     # Transform the image using Cloudinary
     try:
-        transformed_url = upload_image(temp_file, transformations)
+        transformed_url = CloudinaryService.upload_image(temp_file, transformations)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error transforming image: {str(e)}")
     finally:
@@ -107,7 +107,7 @@ async def transform_image_with_cloudinary(
 
     # Upload the QR code to Cloudinary
     try:
-        qr_code_url = upload_image(qr_code_path)
+        qr_code_url = CloudinaryService.upload_image(qr_code_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading QR code: {str(e)}")
     finally:
