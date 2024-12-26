@@ -6,5 +6,5 @@ class ImageUploadRequest(BaseModel):
     transformations: Optional[List[Dict[str, str]]] = None
 
 class ImageResponse(BaseModel):
-    image_url: HttpUrl
+    cloudinary_url: HttpUrl
     qr_code_url: Optional[HttpUrl] = None
