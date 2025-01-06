@@ -175,6 +175,3 @@ frontend/
 
 # IntelliJ IDEA
 .idea/
-
-#Poetry
-poetry.lock
