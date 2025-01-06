@@ -16,10 +16,8 @@ from src.schemas.posts import PostOut, PostUpdate, PostCreate, MessageResponse, 
 
 from src.services.cloudinary import CloudinaryService
 from src.services.utils import get_current_user, RoleChecker
-from src.services.qr_code import generate_qr_code
 
 from src.repository.posts import PostRepository
-from src.repository.tags import TagRepository
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

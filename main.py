@@ -2,14 +2,15 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.routes import tags, posts, comments, auth
+from src.routes import tags, posts, comments, auth, cloudinary_routes
 
 app = FastAPI()
 
 app.include_router(auth.router, prefix="/api/auth", tags=["Auth"])
 app.include_router(tags.router, prefix='/api/tags', tags=["Tags"])
 app.include_router(posts.router, prefix='/api/posts', tags=["Posts"])
-app.include_router(comments.router, prefix="/comments", tags=["Comments"])
+app.include_router(comments.router, prefix="/api/comments", tags=["Comments"])
+app.include_router(cloudinary_routes.router, prefix="/api/transform", tags=["Transformations"])
 
 app.add_middleware(
     CORSMiddleware,
