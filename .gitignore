@@ -172,3 +172,9 @@ cython_debug/
 
 # Frontend
 frontend/
+
+# IntelliJ IDEA
+.idea/
+
+#Poetry
+poetry.lock

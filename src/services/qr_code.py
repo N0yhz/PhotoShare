@@ -1,23 +1,20 @@
 import qrcode
 from io import BytesIO
 
-
-def generate_qr_code(url):
-    """
-    Generates a QR code for the given URL.
-    :param url: URL for the QR code.
-    :return: byte stream of the QR code.
-    """
+def generate_qr_code(data: str) -> BytesIO:
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,
         box_size=10,
         border=4,
     )
-    qr.add_data(url)
+    qr.add_data(data)
     qr.make(fit=True)
 
-    qr_image = BytesIO()
-    qr.make_image(fill="black", back_color="white").save(qr_image, format="PNG")
-    qr_image.seek(0)
-    return qr_image
+    img = qr.make_image(fill_color="black", back_color="white")
+
+    img_bytes = BytesIO()
+    img.save(img_bytes, format='PNG')
+    img_bytes.seek(0)
+
+    return img_bytes

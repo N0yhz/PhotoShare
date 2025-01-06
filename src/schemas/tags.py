@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+from typing import List
 
 
 class TagBase(BaseModel):
@@ -7,8 +8,14 @@ class TagBase(BaseModel):
 class TagCreate(TagBase):
     pass
 
-class TagOut(TagBase):
+class TagOut(BaseModel):
     id: int = Field(gt=0)
+    name: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes = True)
+
+class AddTags(BaseModel):
+    tags: List[str]
+
+class TagList(BaseModel):
+    tags: List[str]
