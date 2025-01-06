@@ -46,6 +46,7 @@ class User(Base):
     first_name: Mapped[Optional[str]] = mapped_column(String(50))
     last_name: Mapped[Optional[str]] = mapped_column(String(50))
     bio: Mapped[Optional[str]] = mapped_column(String(155), nullable=True)
+    banned: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
 
     # relationships
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")

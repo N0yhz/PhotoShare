@@ -1,14 +1,15 @@
 import os
+import asyncio
+import logging
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
+from fastapi import HTTPException, UploadFile
 
-from fastapi import HTTPException
 from dotenv import load_dotenv
 
-# Load data from .env
-load_dotenv()
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
+load_dotenv()
 
 # Initialize Cloudinary
 cloudinary.config(
@@ -19,30 +20,24 @@ cloudinary.config(
 
 class CloudinaryService:
     @staticmethod
-    async def upload_image(file_path: str, transformations=None):
-        """
-        Upload the image to Cloudinary with optional transformations.
-        :param file_path: image file.
-        :param transformations: Transformations for Cloudinary.
-        :return: URL of the transformed image.
-        """
+    async def upload_image(file: UploadFile) -> str:
         try:
-            upload_options = {"resource_type": "image"}
-            if transformations:
-                upload_options["transformation"] = transformations
-        
-            response = cloudinary.uploader.upload(file_path, **upload_options)
-            return response["secure_url"]
+            result = await asyncio.to_thread(
+                cloudinary.uploader.upload,file.file, folder="photoshare"
+                )
+            logger.info("Image uploaded successfully")
+            return result['secure_url']
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Cloudinary upload failed: {str(e)}")
-        
+            raise HTTPException(status_code=500, detail=str(e))
+
     @staticmethod
-    async def delete_image(public_id: str):
-        """
-        Delete an image from Cloudinary using its public ID.
-        :param public_id: The public ID of the image in Cloudinary.
-        """
+    async def upload_image_to_transform(file_path: str, transformation: dict = None) -> str:
         try:
-            cloudinary.uploader.destroy(public_id, resource_type="image")
+            with open(file_path, "rb") as f:
+                result = await asyncio.to_thread(
+                    cloudinary.uploader.upload, f, folder="pts_transform", transformation=transformation
+                )
+            logger.info("Image uploaded successfully")
+            return result['secure_url']
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Cloudinary deletion failed: {str(e)}")
+            raise HTTPException(status_code=500, detail=str(e))

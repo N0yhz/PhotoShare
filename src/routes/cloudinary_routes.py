@@ -1,98 +1,66 @@
 import json
-
-from fastapi import APIRouter, UploadFile, File, HTTPException, Form, Depends
+from fastapi import APIRouter,HTTPException, Form, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from src.database.db import get_db
-from src.entity.models import Post, Transformation
+from src.entity.models import Post, Transformation, QRCode
 import requests
 from src.services.cloudinary import CloudinaryService
 from src.services.qr_code import generate_qr_code
 from src.schemas.cloudinary_qr import ImageResponse
-import shutil
 from pathlib import Path
 
 router = APIRouter()
 
-
-@router.post("/upload", response_model=ImageResponse)
-async def upload_image_to_cloudinary(file: UploadFile = File(...)):
-    """
-    Uploads an image file to Cloudinary without transformations.
-    """
-    if not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail="Invalid file type. Please upload an image.")
-
-    temp_file = Path(f"/tmp/{file.filename}")
-    with open(temp_file, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
-
-    # Upload the image to Cloudinary
-    try:
-        image_url = CloudinaryService.upload_image(temp_file)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error uploading image: {str(e)}")
-    finally:
-        temp_file.unlink()
-
-    return {"image_url": image_url}
-
-
-@router.post("/transform/{post_id}", response_model=ImageResponse)
+@router.post("/{post_id}", response_model=ImageResponse)
 async def transform_image_with_cloudinary(
     post_id: int,
     effect: int = Form(..., description="Choose 1 (grayscale) or 2 (cartoon)"),
     db: AsyncSession = Depends(get_db),
 ):
-    """
-    Transforms an image file with a predefined effect and generates a QR code URL.
-    """
-    # Get the image URL from the database
-    query = select(Post).where(Post.id == post_id)
-    result = await db.execute(query)
-    post = result.scalar_one_or_none()
-
+    # Retrieve the post from the database
+    post = await db.get(Post, post_id)
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
 
-    # Get the image file from Cloudinary
+    # Download the image from Cloudinary
     try:
-        image_url = post.cloudinary_url  # Get the Cloudinary URL from the database
-        response = requests.get(image_url)  # Download the image from Cloudinary
+        cloudinary_url = post.cloudinary_url
+        response = requests.get(cloudinary_url)
         response.raise_for_status()
-        file = response.content  # Get the image file in bytes
+        file_content = response.content
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching image: {str(e)}")
 
-    # Choosing the effect based on the user input
-    transformations = []
+    # Determine the transformation
+    transformation= []
     if effect == 1:
-        transformations.append({"effect": "grayscale"})
+        transformation = {"effect": "grayscale"}
     elif effect == 2:
-        transformations.append({"effect": "cartoonify"})
+        transformation = {"effect": "cartoonify"}
     else:
         raise HTTPException(status_code=400, detail="Invalid effect. Choose 1 (grayscale) or 2 (cartoon).")
+    
+    transform_params_str = json.dumps(transformation)
 
-    # Convert transformations to string
-    transformation_params_str = json.dumps(transformations)  # Save as JSON string
-
+    # Save the image to a temporary file
     temp_file = Path(f"/tmp/{post_id}_image.jpg")
     with open(temp_file, "wb") as buffer:
-        buffer.write(file)
+        buffer.write(file_content)
 
-    # Transform the image using Cloudinary
+    # Upload the transformed image to Cloudinary
     try:
-        transformed_url = CloudinaryService.upload_image(temp_file, transformations)
+        transformed_url = await CloudinaryService.upload_image_to_transform(str(temp_file), transformation=transformation)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error transforming image: {str(e)}")
     finally:
         temp_file.unlink()
 
-    # Save the transformed URL to the database
+    # Create a Transformation record
     new_transformation = Transformation(
-        transform_params=transformation_params_str,
+        transform_params=transform_params_str,
         transformed_url=transformed_url,
-        post_id=post_id)
+        post_id=post_id
+    )
     db.add(new_transformation)
     await db.commit()
     await db.refresh(new_transformation)
@@ -107,10 +75,19 @@ async def transform_image_with_cloudinary(
 
     # Upload the QR code to Cloudinary
     try:
-        qr_code_url = CloudinaryService.upload_image(qr_code_path)
+        qr_code_url = await CloudinaryService.upload_image_to_transform(qr_code_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading QR code: {str(e)}")
     finally:
-        qr_code_path.unlink()
+        Path(qr_code_path).unlink()
 
-    return ImageResponse(image_url=transformed_url, qr_code_url=qr_code_url)
+    # Create a QRCode record
+    new_qrcode = QRCode(
+        qr_code_url=qr_code_url,
+        transformation_id=new_transformation.id
+    )
+    db.add(new_qrcode)
+    await db.commit()
+    await db.refresh(new_qrcode)
+
+    return ImageResponse(cloudinary_url=transformed_url, qr_code_url=qr_code_url)

@@ -93,3 +93,4 @@ async def create_post(body: CreatePost, user_id: int, db: Session):
     db.commit()
     db.refresh(post)
     return post
+

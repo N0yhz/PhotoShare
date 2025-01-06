@@ -1,25 +1,30 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import List, Optional
 from .tags import TagOut
 
 class PostBase(BaseModel):
+    cloudinary_url: str
     description: Optional[str] = None
 
 class PostCreate(PostBase):
-    tags: Optional[List[str]] = None
+    pass
 
 class PostUpdate(BaseModel):
     description: Optional[str] = None
-    tags: Optional[List[str]] = None
 
-class PostOut(PostBase):
+class PostOut(BaseModel):
     id: int
     user_id: int
     cloudinary_url: str
+    description: Optional[str] = None
     created_at: datetime
     updated_at: datetime
-    tags: List[TagOut] = []
  
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes = True, arbitrary_types_allowed=True)
+
+class PostTags(PostOut):
+    tags: List[TagOut]
+
+class MessageResponse(BaseModel):
+    message: str
