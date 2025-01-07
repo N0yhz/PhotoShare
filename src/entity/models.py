@@ -1,5 +1,5 @@
 import enum
-from datetime import date
+from datetime import date, datetime
 
 from typing import Optional, List
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Enum, Boolean, func, Table, Column
@@ -52,6 +52,13 @@ class User(Base):
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     role: Mapped["Role"] = relationship("Role", lazy="selectin")
+    
+
+class TokenBlacklist(Base):
+    __tablename__ = "token_blacklist"
+    id = mapped_column(Integer, primary_key=True, index=True)
+    token = mapped_column(String, unique=True)
+    blacklisted_at = mapped_column(DateTime, default=datetime.utcnow)
     
 
 class Post(Base):
