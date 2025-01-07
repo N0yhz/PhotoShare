@@ -69,18 +69,18 @@ async def get_post(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
     return post
 
+
 @router.post("/posts/{post_id}/tags", response_model=PostTags)
-async def add_tags_to_post(
-    post_id: int,
-    tags: AddTags,
-    db: AsyncSession = Depends(get_db)
-):
-    updated_post = await PostRepository.add_tags_to_post(
-        db=db,
-        post_id=post_id,
-        tag_names=tags.tags
-    )
+async def add_tags_to_post(post_id: int, tags: AddTags, db: AsyncSession = Depends(get_db)):
+    if len(tags.tags) > 5:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You can add up to 5 tags only"
+        )
+
+    updated_post = await PostRepository.add_tags_to_post(db=db, post_id=post_id, tags=tags.tags)
     return updated_post
+
 
 @router.put("/{post_id}", response_model=PostOut)
 async def update_post(
@@ -90,12 +90,12 @@ async def update_post(
     db: AsyncSession = Depends(get_db)
 ):
     post = await PostRepository.get_post(db, post_id)
-    
+
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
     if post.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to update this post")
-    
+
     updated_post = await PostRepository.update_post(
         db=db,
         post_id=post_id,
@@ -110,13 +110,13 @@ async def delete_post(
     db: AsyncSession = Depends(get_db)
 ):
     post = await PostRepository.get_post(db, post_id)
-    
+
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
-    
+
     if post.user_id != current_user.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You are not authorized to delete this post")
-    
+
     deleted_post = await PostRepository.delete_post(db, post_id)
     if deleted_post:
         return {"message": "Post deleted successfully"}

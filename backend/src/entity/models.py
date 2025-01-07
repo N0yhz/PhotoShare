@@ -15,9 +15,9 @@ class RoleEnum(enum.Enum):
     admin: str = "admin"
     moderator: str = "moderator"
     user: str = "user"
-    
 
-posts_tags= Table(
+
+posts_tags = Table(
     "posts_tags",
     Base.metadata,
     Column("post_id", Integer, ForeignKey("posts.id", ondelete="CASCADE")),
@@ -27,10 +27,10 @@ posts_tags= Table(
 
 class Role(Base):
     __tablename__ = "roles"
-    
+
     id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
     name: Mapped[str] = mapped_column(String, unique=True)
-    
+
 
 class User(Base):
     __tablename__ = 'users'
@@ -52,14 +52,14 @@ class User(Base):
     posts: Mapped[List["Post"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     comments: Mapped[List["Comment"]] = relationship(back_populates="user", cascade="all, delete-orphan")
     role: Mapped["Role"] = relationship("Role", lazy="selectin")
-    
+
 
 class TokenBlacklist(Base):
     __tablename__ = "token_blacklist"
     id = mapped_column(Integer, primary_key=True, index=True)
     token = mapped_column(String, unique=True)
     blacklisted_at = mapped_column(DateTime, default=datetime.utcnow)
-    
+
 
 class Post(Base):
     __tablename__ = 'posts'
@@ -78,7 +78,7 @@ class Post(Base):
 
     user: Mapped["User"] = relationship(back_populates="posts")
     comments: Mapped["Comment"] = relationship(back_populates="post", cascade="all, delete-orphan")
-    tags: Mapped[List["Tag"]] = relationship(secondary=posts_tags, back_populates="posts")
+    tags: Mapped[List["Tag"]] = relationship(secondary=posts_tags, back_populates="posts", lazy="selectin")
     transformations: Mapped[List["Transformation"]] = relationship(back_populates="post", cascade="all, delete-orphan")
 
 
@@ -119,7 +119,7 @@ class Transformation(Base):
     created_at: Mapped[date] = mapped_column(
         "created_at", DateTime, default=func.now(), nullable=True
     )
-    
+
     post_id: Mapped[int] = mapped_column(Integer, ForeignKey("posts.id", ondelete="CASCADE"))
 
     post: Mapped["Post"] = relationship(back_populates="transformations")

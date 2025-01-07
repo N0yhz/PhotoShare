@@ -1,4 +1,4 @@
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -17,10 +17,7 @@ router = APIRouter()
 
 
 @router.post("/register", response_model=UserResponse)
-async def register(
-    user_create: UserCreate, 
-    db: AsyncSession = Depends(get_db)
-):
+async def register(user_create: UserCreate, db: AsyncSession = Depends(get_db)):
     user = await UserRepository.get_user_by_email(user_create.email, db)
     
     if user:
