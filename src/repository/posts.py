@@ -21,6 +21,11 @@ class PostRepository():
         return db_post
 
     @staticmethod
+    async def get_all_posts(db: AsyncSession) -> List[Post]:
+        result = await db.execute(select(Post).options(selectinload(Post.tags)))
+        return result.scalars().all()
+
+    @staticmethod
     async def get_post(db: AsyncSession, post_id: int) -> Post | None:
         stmt = select(Post).where(Post.id == post_id).options(selectinload(Post.user))
         result = await db.execute(stmt)

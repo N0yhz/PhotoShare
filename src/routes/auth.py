@@ -77,10 +77,36 @@ async def update_avatar(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading avatar: {str(e)}")
 
+@router.post("/update-profile", response_model=UserResponse)
+async def update_profile(
+    username: str = None,
+    first_name: str = None,
+    last_name: str = None,
+    bio: str = None,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        updated_user = await UserRepository.update_user_profile(
+            db, current_user.id, username, first_name, last_name, bio
+        )
+        return updated_user
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating profile: {str(e)}")
 
 @router.get("/my_info")
 async def get_my_data(user: UserResponse = Depends(get_current_user)):
     return {"role": user.role.name, "username": user.username, "email": user.email}
+
+@router.get("/users/{username}")
+async def get_user_profile(user: UserResponse = Depends(UserRepository.get_user_by_username)):
+    return {
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "bio": user.bio,
+        "avatar": user.avatar,
+    }
 
 
 @router.post("/change_role")

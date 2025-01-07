@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,11 +37,12 @@ class UserRepository:
         result = await db.execute(query)
         return result.scalar_one_or_none()
 
-    async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)):
-        query = select(User).filter_by(username = username)
+    async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)) -> Optional[User]:
+        query = select(User).where(User.username == username)
         result = await db.execute(query)
-        return result.scalar_one_or_none()
-    
+        user = result.scalars().first()
+        return user
+        
     async def activate_user(self, user: User):
         user.is_active = True
         self.session.add(user)
@@ -66,6 +68,31 @@ class UserRepository:
             user.avatar = avatar
             await db.commit()
             await db.refresh(user)
+        return user
+    
+    async def update_user_profile(
+            db: AsyncSession, 
+            user_id: int,
+            username: Optional[str] = None,
+            first_name: Optional[str] = None,
+            last_name: Optional[str] = None, 
+            bio: Optional[str] = None
+        ):
+        query = select(User).filter_by(id=user_id)
+        result = await db.execute(query)
+        user = result.scalar_one_or_none()
+        
+        if user:
+            if username:
+                user.username = username
+            if first_name:
+                user.first_name = first_name
+            if last_name:
+                user.last_name = last_name
+            if bio:
+                user.bio = bio
+        await db.commit()
+        await db.refresh(user)
         return user
     
 class RoleRepository:

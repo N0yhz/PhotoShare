@@ -37,7 +37,14 @@ async def create_post(
         return new_post
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
-        
+
+@router.get("/all_posts")
+async def get_posts(
+    db: AsyncSession = Depends(get_db),
+):
+    posts = await PostRepository.get_all_posts(db)
+    return posts
+
 @router.get("/", response_model=List[PostOut])
 async def get_posts(
     db: AsyncSession = Depends(get_db),

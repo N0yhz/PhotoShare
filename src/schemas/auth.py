@@ -16,6 +16,9 @@ class UserResponse(BaseModel):
     username: str
     email: EmailStr
     avatar: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    bio: Optional[str]
     model_config = ConfigDict(from_attributes = True)
         
         
