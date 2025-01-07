@@ -2,7 +2,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, 
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.services.utils import oauth2_scheme
+from src.services.utils import oauth2_schema
 
 from src.entity.models import RoleEnum, TokenBlacklist, User
 from src.services.pass_utils import verify_password
@@ -150,7 +150,7 @@ async def unban_user(
 
 @router.post("/logout")
 async def logout(
-    token: str = Depends(oauth2_scheme), 
+    token: str = Depends(oauth2_schema), 
     db: AsyncSession = Depends(get_db)
 ):
     # Validate the token

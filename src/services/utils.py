@@ -110,7 +110,7 @@ async def is_mod_or_admin(db: AsyncSession, user_id: int):
     return False
 
 
-async def validate_token(token: str, db: AsyncSession):
+async def validate_token(token: str, db: AsyncSession = Depends(get_db)):
     query = select(TokenBlacklist).where(TokenBlacklist.token == token)
     result = await db.execute(query)
     if result.scalar_one_or_none():
