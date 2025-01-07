@@ -1,8 +1,9 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.services.utils import oauth2_scheme
 
-from src.entity.models import RoleEnum, User
+from src.entity.models import RoleEnum, TokenBlacklist, User
 from src.services.pass_utils import verify_password
 from src.schemas.auth import UserCreate, UserResponse, Token
 from src.repository.auth import RoleRepository, UserRepository
@@ -123,3 +124,33 @@ async def ban_user(
     await session.commit()
     
     return {"message": f"User {user_to_ban.id} has been banned."}
+
+@router.post("/unban/{user_id}")
+async def unban_user(
+    user_id: int,
+    current_admin: User = Depends(get_current_admin),
+    session: AsyncSession = Depends(get_db)
+):
+    # Get the user to unban
+    user_to_unban = await session.get(User, user_id)
+    if not user_to_unban:
+        raise HTTPException(status_code=404, detail="User not found")
+    if user_to_unban.id == current_admin.id:
+        raise HTTPException(status_code=400, detail="Cannot unban yourself")
+    if not user_to_unban.banned:
+        raise HTTPException(status_code=400, detail="User is not banned")
+    
+    # Set banned to False
+    user_to_unban.banned = False
+    await session.commit()
+    
+    return {"message": f"User {user_to_unban.id} has been unbanned."}
+
+
+#logout
+@router.post("/logout")
+async def logout(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
+    blacklisted_token = TokenBlacklist(token=token)
+    db.add(blacklisted_token)
+    await db.commit()
+    return {"message": "Successfully logged out"}

@@ -53,9 +53,6 @@ class UserRepository:
         await self.session.commit()
         await self.session.refresh(user)
         
-        # user.role_id = role.id
-        # await db.commit()
-        
         return {"message": f"Role of {user.username} changed successfully to {user.role.name}"}
     
     async def update_user_avatar(db: AsyncSession, user_id: int, avatar: str):

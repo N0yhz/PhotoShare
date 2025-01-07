@@ -9,8 +9,9 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
-from src.entity.models import User, RoleEnum
+from src.entity.models import TokenBlacklist, User, RoleEnum
 from src.schemas.auth import TokenData
+from src.repository.auth import RoleRepository
 
 
 load_dotenv()
@@ -73,6 +74,7 @@ async def decode_access_token(token: str) -> TokenData | None:
     except JWTError:
         return None
 
+
 async def get_current_user(token: str = Depends(oauth2_schema), db: AsyncSession = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -94,16 +96,26 @@ async def get_current_user(token: str = Depends(oauth2_schema), db: AsyncSession
         raise HTTPException(status_code=403, detail="Your account is banned")
     return user
 
-async def get_current_admin(user: User = Depends(get_current_user)):
-    if user.role is None or user.role.name != RoleEnum.admin:
-        raise HTTPException(status_code=403, detail="Only admins can perform this action")
-    return user
 
+async def get_current_admin(user: User = Depends(get_current_user)):
+    if user.role.name == RoleEnum.admin.value:
+        return user
+    raise HTTPException(status_code=403, detail="Only admins can perform this action")
+    
+    
 async def is_mod_or_admin(db: AsyncSession, user_id: int):
-    user = await db.get(User, user_id)
-    if user and user.role in [RoleEnum.admin, RoleEnum.moderator]:
+    user = RoleRepository.get_role_by_id(db, user_id)
+    if user.role.name in [RoleEnum.admin.value, RoleEnum.moderator.value]:
         return True
     return False
+
+
+async def validate_token(token: str, db: AsyncSession):
+    query = select(TokenBlacklist).where(TokenBlacklist.token == token)
+    result = await db.execute(query)
+    if result.scalar_one_or_none():
+        raise HTTPException(status_code=401, detail="Token is invalid or expired")
+
 
 class RoleChecker:
     def __init__(self, allowed_roles: list[RoleEnum]):
