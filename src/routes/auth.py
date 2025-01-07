@@ -1,5 +1,6 @@
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.services.utils import oauth2_scheme
 
@@ -147,10 +148,25 @@ async def unban_user(
     return {"message": f"User {user_to_unban.id} has been unbanned."}
 
 
-#logout
 @router.post("/logout")
-async def logout(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_db)):
+async def logout(
+    token: str = Depends(oauth2_scheme), 
+    db: AsyncSession = Depends(get_db)
+):
+    # Validate the token
+    token_data = await decode_access_token(token)
+    if not token_data:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    
+    # Check if the token is already blacklisted
+    query = select(TokenBlacklist).where(TokenBlacklist.token == token)
+    result = await db.execute(query)
+    if result.scalar_one_or_none():
+        raise HTTPException(status_code=400, detail="Token is already blacklisted")
+    
+    # Add the token to the blacklist
     blacklisted_token = TokenBlacklist(token=token)
     db.add(blacklisted_token)
     await db.commit()
+    
     return {"message": "Successfully logged out"}
