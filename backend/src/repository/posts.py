@@ -10,8 +10,23 @@ from src.schemas.posts import PostCreate
 
 
 class PostRepository():
+    """
+    Repository class for managing post-related database operations.
+    """
+
     @staticmethod
     async def create_post(db: AsyncSession, post: PostCreate, user_id: int):
+        """
+        Creates a new post in the database.
+
+        Args:
+            db (AsyncSession): The database session.
+            post (PostCreate): The data for the new post.
+            user_id (int): The ID of the user creating the post.
+
+        Returns:
+            Post: The newly created post.
+        """
         db_post = Post(
             cloudinary_url=post.cloudinary_url,
             description=post.description,
@@ -23,11 +38,30 @@ class PostRepository():
 
     @staticmethod
     async def get_all_posts(db: AsyncSession) -> List[Post]:
+        """
+        Retrieves all posts from the database.
+
+        Args:
+            db (AsyncSession): The database session.
+
+        Returns:
+            List[Post]: A list of all posts.
+        """
         result = await db.execute(select(Post).options(selectinload(Post.tags)))
         return result.scalars().all()
 
     @staticmethod
     async def get_post(db: AsyncSession, post_id: int) -> Post | None:
+        """
+        Retrieves a post by its ID.
+
+        Args:
+            db (AsyncSession): The database session.
+            post_id (int): The ID of the post.
+
+        Returns:
+            Post | None: The post if found, otherwise None.
+        """
         stmt = select(Post).where(Post.id == post_id).options(selectinload(Post.user))
         result = await db.execute(stmt)
         post = result.scalar_one_or_none()
@@ -35,6 +69,16 @@ class PostRepository():
 
     @staticmethod
     async def get_with_tags(db: AsyncSession, post_id: int) -> Post:
+        """
+        Retrieves a post by its ID, including associated tags.
+
+        Args:
+            db (AsyncSession): The database session.
+            post_id (int): The ID of the post.
+
+        Returns:
+            Post: The post with tags.
+        """
         stmt = select(Post).where(Post.id == post_id).options(selectinload(Post.tags))
         result = await db.execute(stmt)
         post = result.scalar_one_or_none()
@@ -42,6 +86,17 @@ class PostRepository():
 
     @staticmethod
     async def get_by_user(db: AsyncSession, user_id: int) -> List[Post]:
+        """
+        Retrieves all posts created by a specific user.
+
+        Args:
+            db (AsyncSession): The database session.
+            user_id (int): The ID of the user.
+
+        Returns:
+            List[Post]: A list of posts created by the user.
+        """
+
         result = await db.execute(
             select(Post)
             .options(selectinload(Post.tags))
@@ -51,6 +106,17 @@ class PostRepository():
 
     @staticmethod
     async def update_post(db: AsyncSession, post_id: int, description: str):
+        """
+        Updates the description of a post.
+
+        Args:
+            db (AsyncSession): The database session.
+            post_id (int): The ID of the post to update.
+            description (str): The new description for the post.
+
+        Returns:
+            Post | None: The updated post if found, otherwise None.
+        """
         db_post = await db.get(Post, post_id)
         if not db_post:
             print(f"Post with ID {post_id} not found.")
@@ -64,6 +130,16 @@ class PostRepository():
 
     @staticmethod
     async def delete_post(db: AsyncSession, post_id: int) -> Post | None:
+        """
+        Deletes a post by its ID.
+
+        Args:
+            db (AsyncSession): The database session.
+            post_id (int): The ID of the post to delete.
+
+        Returns:
+            Post | None: The deleted post if found, otherwise None.
+        """
         post = await PostRepository.get_post(db, post_id)
         if post:
             await db.delete(post)
@@ -73,6 +149,20 @@ class PostRepository():
 
     @staticmethod
     async def add_tags_to_post(db: AsyncSession, post_id: int, tags: List[str]) -> Post:
+        """
+        Adds tags to a post. If a tag does not exist, it will be created.
+
+        Args:
+            db (AsyncSession): The database session.
+            post_id (int): The ID of the post.
+            tags (List[str]): A list of tag names to add.
+
+        Returns:
+            Post: The post with updated tags.
+
+        Raises:
+            HTTPException: If the post is not found.
+        """
         post = await db.get(Post, post_id)
 
         if not post:

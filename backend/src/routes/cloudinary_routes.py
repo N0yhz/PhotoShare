@@ -17,6 +17,20 @@ async def transform_image_with_cloudinary(
     effect: int = Form(..., description="Choose 1 (grayscale) or 2 (cartoon)"),
     db: AsyncSession = Depends(get_db),
 ):
+    """
+    Transforms an image using Cloudinary and generates a QR code for the transformed image.
+
+    Args:
+        post_id (int): The ID of the post containing the image to transform.
+        effect (int): The effect to apply to the image. Choose 1 for grayscale or 2 for cartoon.
+        db (AsyncSession): The database session.
+
+    Returns:
+        ImageResponse: The transformed image URL and the QR code URL.
+
+    Raises:
+        HTTPException: If the post is not found, the effect is invalid, or an error occurs during processing.
+    """
     # Retrieve the post from the database
     post = await db.get(Post, post_id)
     if not post:

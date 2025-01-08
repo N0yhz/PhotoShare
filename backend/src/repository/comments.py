@@ -8,12 +8,25 @@ from src.entity.models import Comment, Post
 from src.schemas.comments import CommentCreate
 from src.services.utils import is_mod_or_admin
 
+
 async def create_comment(
         db: AsyncSession,
         comment: CommentCreate,
         user_id: int,
         post_id: int
     ):
+    """
+    Creates a new comment for a specific post.
+
+    Args:
+        db (AsyncSession): The database session.
+        comment (CommentCreate): The data for the new comment.
+        user_id (int): The ID of the user creating the comment.
+        post_id (int): The ID of the post the comment belongs to.
+
+    Returns:
+        Comment: The newly created comment.
+    """
         db_comment = Comment(
             user_id=user_id,
             post_id=post_id,
@@ -24,7 +37,18 @@ async def create_comment(
         await db.refresh(db_comment)
         return db_comment
 
+
 async def get_comments_by_post(db: AsyncSession, post_id: int) -> List[Comment]:
+    """
+    Gets all comments for a specific post.
+
+    Args:
+        db (AsyncSession): The database session.
+        post_id (int): The ID of the post.
+
+    Returns:
+        List[Comment]: A list of comments for the specified post.
+    """
         comments = await db.execute(
             select(Comment)
             .where(Comment.post_id == post_id)
@@ -33,11 +57,23 @@ async def get_comments_by_post(db: AsyncSession, post_id: int) -> List[Comment]:
         comments = comments.scalars().all()
         return comments
 
+
 async def get_comment(db: AsyncSession, comment_id: int) -> Comment | None:
+    """
+    Gets a specific comment by its ID.
+
+    Args:
+        db (AsyncSession): The database session.
+        comment_id (int): The ID of the comment.
+
+    Returns:
+        Comment | None: The comment if found, otherwise None.
+    """
         stmt = select(Comment).where(Comment.id == comment_id).options(selectinload(Comment.user))
         result = await db.execute(stmt)
         comment = result.scalar_one_or_none()
         return comment
+
 
 async def update_comment(
     db: AsyncSession,
@@ -45,6 +81,21 @@ async def update_comment(
     content: str,
     user_id: int
 ) -> Comment:
+    """
+    Updates specific comment.
+
+    Args:
+        db (AsyncSession): The database session.
+        comment_id (int): The ID of the comment to update.
+        content (str): The new content for the comment.
+        user_id (int): The ID of the user attempting to update the comment.
+
+    Returns:
+        Comment: The updated comment.
+
+    Raises:
+        HTTPException: If the comment is not found or the user is not authorized to update it.
+    """
     comment = await db.get(Comment, comment_id)
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")
@@ -56,11 +107,27 @@ async def update_comment(
     await db.refresh(comment)
     return comment
 
+
 async def delete_comment(
     db: AsyncSession,
     comment_id: int,
     user_id: int
 ):
+    """
+    Deletes a specific comment.
+
+    Args:
+        db (AsyncSession): The database session.
+        comment_id (int): The ID of the comment to delete.
+        user_id (int): The ID of the user attempting to delete the comment.
+
+    Returns:
+        dict: A message indicating successful deletion.
+
+    Raises:
+        HTTPException: If the comment is not found or the user is not authorized to delete it.
+    """
+
     comment = await db.get(Comment, comment_id)
     if not comment:
         raise HTTPException(status_code=404, detail="Comment not found")

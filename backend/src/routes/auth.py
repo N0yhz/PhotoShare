@@ -18,6 +18,19 @@ router = APIRouter()
 
 @router.post("/register", response_model=UserResponse)
 async def register(user_create: UserCreate, db: AsyncSession = Depends(get_db)):
+    """
+    Registers a new user.
+
+    Args:
+        user_create (UserCreate): The data for the new user.
+        db (AsyncSession): The database session.
+
+    Returns:
+        UserResponse: The created user data.
+
+    Raises:
+        HTTPException: If the user is already registered.
+    """
     user = await UserRepository.get_user_by_email(user_create.email, db)
     
     if user:
@@ -31,6 +44,19 @@ async def register(user_create: UserCreate, db: AsyncSession = Depends(get_db)):
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
 ):
+    """
+    Authenticates a user and provides access and refresh tokens.
+
+    Args:
+        form_data (OAuth2PasswordRequestForm): The login credentials.
+        db (AsyncSession): The database session.
+
+    Returns:
+        Token: Access and refresh tokens.
+
+    Raises:
+        HTTPException: If the credentials are incorrect.
+    """
     user = await UserRepository.get_user_by_email(form_data.username, db)
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
@@ -47,6 +73,19 @@ async def login_for_access_token(
 
 @router.post("/refresh", response_model=Token)
 async def refresh_tokens(refresh_token: str, db: AsyncSession = Depends(get_db)):
+    """
+    Refreshes access and refresh tokens.
+
+    Args:
+        refresh_token (str): The refresh token.
+        db (AsyncSession): The database session.
+
+    Returns:
+        Token: New access and refresh tokens.
+
+    Raises:
+        HTTPException: If the user is not found or the refresh token is invalid.
+    """
     token_data = decode_access_token(refresh_token)
     user_repo = UserRepository(db)
     user = await user_repo.get_user_by_email(token_data.email)
@@ -69,6 +108,20 @@ async def update_avatar(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    """
+    Updates the avatar for the current user.
+
+    Args:
+        file (UploadFile): The avatar picture file to upload.
+        current_user (User): The currently authenticated user.
+        db (AsyncSession): The database session.
+
+    Returns:
+        UserResponse: The updated user data.
+
+    Raises:
+        HTTPException: If there is an error uploading the avatar.
+    """
     try:
         avatar = await CloudinaryService.upload_image(file)
         updated_user = await UserRepository.update_user_avatar(db, current_user.id, avatar)
@@ -85,6 +138,23 @@ async def update_profile(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
+    """
+    Updates the profile information of the current user.
+
+    Args:
+        username (str, optional): The new username.
+        first_name (str, optional): The new first name.
+        last_name (str, optional): The new last name.
+        bio (str, optional): The new biography.
+        current_user (User): The currently authenticated user.
+        db (AsyncSession): The database session.
+
+    Returns:
+        UserResponse: The updated user data.
+
+    Raises:
+        HTTPException: If there is an error updating the profile.
+    """
     try:
         updated_user = await UserRepository.update_user_profile(
             db, current_user.id, username, first_name, last_name, bio
@@ -95,10 +165,28 @@ async def update_profile(
 
 @router.get("/my_info")
 async def get_my_data(user: UserResponse = Depends(get_current_user)):
+    """
+    Gets information about the current authenticated user.
+
+    Args:
+        user (UserResponse): The current authenticated user.
+
+    Returns:
+        dict: A dictionary containing the user's role, username, and email.
+    """
     return {"role": user.role.name, "username": user.username, "email": user.email}
 
 @router.get("/users/{username}")
 async def get_user_profile(user: UserResponse = Depends(UserRepository.get_user_by_username)):
+    """
+    Gets the profile of a user by their username.
+
+    Args:
+        user (UserResponse): The user data.
+
+    Returns:
+        dict: A dictionary containing the user's profile details.
+    """
     return {
         "username": user.username,
         "email": user.email,
@@ -117,6 +205,21 @@ async def change_role(
     db: AsyncSession = Depends(get_db), 
     user: User = Depends(RoleChecker([RoleEnum.admin])),
 ):
+    """
+    Changes the role of a user.
+
+    Args:
+        username (str): The username of the target user.
+        role_id (int): The ID of the new role.
+        db (AsyncSession): The database session.
+        user (User): The currently authenticated admin user.
+
+    Returns:
+        dict: A message indicating the role change success.
+
+    Raises:
+        HTTPException: If the user or role is not found.
+    """
     user_repo = UserRepository(db)
     role_repo = RoleRepository(db)
     
@@ -132,6 +235,16 @@ async def change_role(
 
 @router.get("/current-admin")
 async def get_current_admin(user: User = Depends(get_current_admin)):
+    """
+    Retrieves the current authenticated admin user.
+
+    Args:
+        user (User): The current authenticated admin user.
+
+    Returns:
+        User: The admin user data.
+    """
+
     return user
 
 @router.post("/ban/{user_id}")
@@ -140,6 +253,20 @@ async def ban_user(
     current_admin: User = Depends(get_current_admin),
     session: AsyncSession = Depends(get_db)
 ):
+    """
+    Bans a user by his/her ID.
+
+    Args:
+        user_id (int): The ID of the user to ban.
+        current_admin (User): The current authenticated admin user.
+        session (AsyncSession): The database session.
+
+    Returns:
+        dict: A message indicating the ban success.
+
+    Raises:
+        HTTPException: If the user is not found, banned, or an admin tries to ban themselves.
+    """
     async with session.begin():
         # Get the user to ban
         user_to_ban = await session.get(User, user_id)
@@ -162,6 +289,21 @@ async def unban_user(
     current_admin: User = Depends(get_current_admin),
     session: AsyncSession = Depends(get_db)
 ):
+    """
+    Unbans a user by his/her ID.
+
+    Args:
+        user_id (int): The ID of the user to unban.
+        current_admin (User): The current authenticated admin user.
+        session (AsyncSession): The database session.
+
+    Returns:
+        dict: A message indicating the unban success.
+
+    Raises:
+        HTTPException: If the user is not found, not banned, or an admin tries to unban himself/herself.
+    """
+
     async with session.begin():
         # Get the user to unban
         user_to_unban = await session.get(User, user_id)
@@ -184,6 +326,19 @@ async def logout(
     token: str = Depends(oauth2_schema), 
     db: AsyncSession = Depends(get_db)
 ):
+    """
+    Logs out the current user by blacklisting his/her token.
+
+    Args:
+        token (str): The token to blacklist.
+        db (AsyncSession): The database session.
+
+    Returns:
+        dict: A message indicating successful logout.
+
+    Raises:
+        HTTPException: If the token is invalid or already blacklisted.
+    """
     # Validate the token
     token_data = await decode_access_token(token)
     if not token_data:

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="895fbddb-d236-46af-a90c-ce83408cb2d5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/backend/src/repository/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/routes/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/schemas/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/services/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/poetry.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pyproject.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/repository/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/repository/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/repository/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/repository/comments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/repository/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/repository/posts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/cloudinary_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/cloudinary_routes.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/comments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/posts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/routes/tags.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/tags.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/schemas/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/schemas/cloudinary_qr.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/cloudinary_qr.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/schemas/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/comments.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/schemas/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/posts.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/schemas/tags.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/tags.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/services/cloudinary.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/cloudinary.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/services/pass_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/pass_utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/services/qr_code.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/qr_code.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/services/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/utils.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2qXEt56Pnr83erW7QvNSqwnU3LT" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.cloudinary.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.codeium.enabled&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-c69650fc56ca-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.15619.17" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="895fbddb-d236-46af-a90c-ce83408cb2d5" name="Changes" comment="" />
+      <created>1734800731194</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1734800731194</updated>
+    </task>
+    <servers />
+  </component>
+</project>
