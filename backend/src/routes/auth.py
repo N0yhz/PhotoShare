@@ -2,15 +2,15 @@ from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.services.utils import oauth2_schema
 
-from backend.src.services.utils import oauth2_schema
-from backend.src.entity.models import RoleEnum, TokenBlacklist, User
-from backend.src.services.pass_utils import verify_password
-from backend.src.schemas.auth import UserCreate, UserResponse, Token
-from backend.src.repository.auth import RoleRepository, UserRepository
-from backend.src.database.db import get_db
-from backend.src.services.utils import RoleChecker, create_access_token, create_refresh_token, decode_access_token, get_current_user, get_current_admin
-from backend.src.services.cloudinary import CloudinaryService
+from src.entity.models import RoleEnum, TokenBlacklist, User
+from src.services.pass_utils import verify_password
+from src.schemas.auth import UserCreate, UserResponse, Token
+from src.repository.auth import RoleRepository, UserRepository
+from src.database.db import get_db
+from src.services.utils import RoleChecker, create_access_token, create_refresh_token, decode_access_token, get_current_user, get_current_admin
+from src.services.cloudinary import CloudinaryService
 
 
 router = APIRouter()
