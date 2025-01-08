@@ -43,6 +43,10 @@ class UserRepository:
         user = result.scalars().first()
         return user
         
+    async def get_all_users(db: AsyncSession):
+        result = await db.execute(select(User))
+        return result.scalars().all()
+    
     async def activate_user(self, user: User):
         user.is_active = True
         self.session.add(user)

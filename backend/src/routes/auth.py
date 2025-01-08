@@ -93,9 +93,14 @@ async def update_profile(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating profile: {str(e)}")
 
-@router.get("/my_info")
-async def get_my_data(user: UserResponse = Depends(get_current_user)):
-    return {"role": user.role.name, "username": user.username, "email": user.email}
+@router.get("/me", response_model=UserResponse)
+async def get_my_data(user: User = Depends(get_current_user)):
+    return user
+
+@router.get("/users")
+async def get_all_users(db: AsyncSession = Depends(get_db)):
+    users = await UserRepository.get_all_users(db)
+    return users 
 
 @router.get("/users/{username}")
 async def get_user_profile(user: UserResponse = Depends(UserRepository.get_user_by_username)):
