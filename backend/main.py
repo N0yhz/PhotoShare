@@ -12,7 +12,9 @@ app.include_router(posts.router, prefix='/api/posts', tags=["Posts"])
 app.include_router(comments.router, prefix="/api/comments", tags=["Comments"])
 app.include_router(cloudinary_routes.router, prefix="/api/transform", tags=["Transformations"])
 
-origins = ["http://localhost:3000"]
+origins = ["http://localhost:3000",
+           "http://127.0.0.1:3000"
+           ]
 
 app.add_middleware(
     CORSMiddleware,
