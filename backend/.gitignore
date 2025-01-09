@@ -171,8 +171,8 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Frontend
-frontend/
 
 # IntelliJ IDEA
 .idea/
+
+tests/
