@@ -2,15 +2,6 @@ import qrcode
 from io import BytesIO
 
 def generate_qr_code(data: str) -> BytesIO:
-    """
-    Generates a QR code from the given data and returns it as a byte stream.
-
-    Args:
-        data (str): The data to encode into the QR code.
-
-    Returns:
-        BytesIO: A byte stream containing the QR code image in PNG format.
-    """
     qr = qrcode.QRCode(
         version=1,
         error_correction=qrcode.constants.ERROR_CORRECT_L,

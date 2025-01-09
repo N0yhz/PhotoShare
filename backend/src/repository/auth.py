@@ -110,7 +110,7 @@ class UserRepository:
         await self.session.commit()
         await self.session.refresh(user)
         
-    async def change_user_role(db: AsyncSession, user: User, role: Role):
+    async def change_user_role(self, user: User, role: Role):
         """
         Changes the role of a user.
 
@@ -125,9 +125,9 @@ class UserRepository:
             SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         user.role_id = role.id
-        db.add(user)
-        await db.commit()
-        await db.refresh(user)
+        self.session.add(user)
+        await self.session.commit()
+        await self.session.refresh(user)
         
         return {"message": f"Role of {user.username} changed successfully to {user.role.name}"}
     
