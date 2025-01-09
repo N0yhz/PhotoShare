@@ -9,20 +9,19 @@ from src.schemas.tags import TagOut, TagCreate
 router = APIRouter()
 
 
-@router.post("", response_model=TagOut)
+@router.post("/create", response_model=TagOut)
 async def create_tag(tag: TagCreate, session: AsyncSession = Depends(get_db)):
-    """
-    Creates a new tag or returns an existing tag if it already exists.
+    """ Creates a new tag in the database.
 
     Args:
-        tag (TagCreate): The tag data to create.
-        session (AsyncSession): The database session.
+        tag (TagCreate): The tag creation data.
+        session (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        TagOut: The created or existing tag.
+        TagOut: The newly created tag or the existing tag if it already exists.
 
     Raises:
-        None: This function does not explicitly raise exceptions.
+        HTTPException: If an error occurs while creating the tag.
     """
     existing_tag = await session.scalar(select(Tag).where(Tag.name == tag.name).limit(1))
 
@@ -35,3 +34,18 @@ async def create_tag(tag: TagCreate, session: AsyncSession = Depends(get_db)):
     await session.refresh(db_tag)
 
     return db_tag
+
+@router.get("/all")
+async def get_all_tags(session: AsyncSession = Depends(get_db)):
+    """
+    Retrieves all tags from the database.
+
+    Args:
+        session (AsyncSession, optional): The database session for executing queries. 
+            Defaults to dependency injection of get_db.
+
+    Returns:
+        list: A list of all Tag objects in the database.
+    """
+    tags = await session.execute(select(Tag))
+    return tags.scalars().all()

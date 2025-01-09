@@ -14,14 +14,17 @@ class UserRepository:
     """
     async def create_user(user_create: UserCreate, db: AsyncSession):
         """
-        Creates a new user in the database.
+        Creates a new user in the database with a hashed password and assigns an appropriate role.
 
         Args:
-            user_create (UserCreate): The data for the new user.
-            db (AsyncSession): The database session.
+            user_create (UserCreate): An object containing user creation data.
+            db (AsyncSession): The database session for executing queries.
 
         Returns:
-            User: The newly created user.
+            User: The newly created user object.
+
+        Raises:
+            SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         hashed_password = get_password_hash(user_create.password)
         
@@ -47,63 +50,81 @@ class UserRepository:
     
     async def get_user_by_email(email: str, db: AsyncSession = Depends(get_db)):
         """
-        Gets a user by their email address.
+        Retrieves a user from the database by email.
 
         Args:
-            email (str): The email of the user.
-            db (AsyncSession): The database session.
+            email (str): The email of the user to retrieve.
+            db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
         Returns:
-            User | None: The user if found, otherwise None.
-        """
+            User: The user object if found, otherwise None.
 
+        Raises:
+            SQLAlchemyError: If there is an error executing the query.
+        """
         query = select(User).filter_by(email = email)
         result = await db.execute(query)
         return result.scalar_one_or_none()
 
     async def get_user_by_username(username: str, db: AsyncSession = Depends(get_db)) -> Optional[User]:
         """
-        Gets a user by username.
+        Retrieves a user from the database by username.
 
         Args:
-            username (str): The username of the user.
-            db (AsyncSession): The database session.
+            username (str): The username of the user to retrieve.
+            db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
         Returns:
-            Optional[User]: The user if found, otherwise None.
+            Optional[User]: The user object if found, otherwise None.
+
+        Raises:
+            SQLAlchemyError: If there is an error executing the query.
         """
         query = select(User).where(User.username == username)
         result = await db.execute(query)
         user = result.scalars().first()
         return user
         
-    async def activate_user(self, user: User):
+    async def get_all_users(db: AsyncSession):
+        result = await db.execute(select(User))
+        return result.scalars().all()
+    
+    async def activate_user(db: AsyncSession, user: User):
         """
-        Activates a user account.
+        Activates a user's account.
 
         Args:
-            user (User): The user to activate.
+            user (User): The user object to activate.
+
+        Returns:
+            None
+
+        Raises:
+            SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         user.is_active = True
-        self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
         
-    async def change_user_role(self, user: User, role: Role):
+    async def change_user_role(db: AsyncSession, user: User, role: Role):
         """
         Changes the role of a user.
 
         Args:
-            user (User): The user whose role needs to be updated.
-            role (Role): The new role.
+            user (User): The user object whose role is to be changed.
+            role (Role): The new role to assign to the user.
 
         Returns:
-            dict: A message indicating the role change success.
+            dict: A message indicating the role change.
+
+        Raises:
+            SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         user.role_id = role.id
-        self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
         
         return {"message": f"Role of {user.username} changed successfully to {user.role.name}"}
     
@@ -112,14 +133,16 @@ class UserRepository:
         Updates the avatar of a user.
 
         Args:
-            db (AsyncSession): The database session.
-            user_id (int): The ID of the user.
+            db (AsyncSession): The database session for executing queries.
+            user_id (int): The ID of the user whose avatar is to be updated.
             avatar (str): The new avatar URL.
 
         Returns:
-            User | None: The updated user if found, otherwise None.
-        """
+            User: The updated user object if found, otherwise None.
 
+        Raises:
+            SQLAlchemyError: If there is an error committing the transaction to the database.
+        """
         query = select(User).filter_by(id=user_id)
         result = await db.execute(query)
         user = result.scalar_one_or_none()
@@ -138,18 +161,21 @@ class UserRepository:
             bio: Optional[str] = None
         ):
         """
-        Updates the profile information of a user.
+        Updates the profile of a user.
 
         Args:
-            db (AsyncSession): The database session.
-            user_id (int): The ID of the user.
-            username (Optional[str]): The new username, if provided.
-            first_name (Optional[str]): The new first name, if provided.
-            last_name (Optional[str]): The new last name, if provided.
-            bio (Optional[str]): The new biography, if provided.
+            db (AsyncSession): The database session for executing queries.
+            user_id (int): The ID of the user whose profile is to be updated.
+            username (Optional[str], optional): The new username. Defaults to None.
+            first_name (Optional[str], optional): The new first name. Defaults to None.
+            last_name (Optional[str], optional): The new last name. Defaults to None.
+            bio (Optional[str], optional): The new bio. Defaults to None.
 
         Returns:
-            User | None: The updated user if found, otherwise None.
+            User: The updated user object if found, otherwise None.
+
+        Raises:
+            SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         query = select(User).filter_by(id=user_id)
         result = await db.execute(query)
@@ -169,42 +195,37 @@ class UserRepository:
         return user
     
 class RoleRepository:
-    """
-    Repository class for managing role-related database operations.
-    """
     def __init__(self, session):
-        """
-        Initializes the RoleRepository.
-
-        Args:
-            session (AsyncSession): The database session.
-        """
         self.session = session
 
     async def get_role_by_name(self, name: RoleEnum):
         """
-        Retrieves a role by its name.
+        Retrieves a role from the database by its name.
 
         Args:
-            name (RoleEnum): The name of the role.
+            name (RoleEnum): The name of the role to retrieve.
 
         Returns:
-            Role | None: The role if found, otherwise None.
-        """
+            Role: The role object if found, otherwise None.
 
+        Raises:
+            SQLAlchemyError: If there is an error executing the query.
+        """
         query = select(Role).where(Role.name == name.value)
         result = await self.session.execute(query)
         return result.scalar_one_or_none()
     
     async def get_role_by_id(self, role_id):
         """
-        Retrieves a role by its ID.
+        Retrieves a role from the database by its ID.
 
-        Args:
-            role_id (int): The ID of the role.
+        Args: role_id (int): The ID of the role to retrieve.
 
         Returns:
-            Role | None: The role if found, otherwise None.
+            Role: The role object if found, otherwise None.
+
+        Raises:
+            SQLAlchemyError: If there is an error executing the query.
         """
         query = select(Role).where(Role.id == role_id)
         result = await self.session.execute(query)

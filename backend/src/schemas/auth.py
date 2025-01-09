@@ -9,7 +9,7 @@ class UserBase(BaseModel):
     Attributes:
         username (str): The username of the user.
         email (EmailStr): The email address of the user.
-        """
+    """
     username: str
     email: EmailStr
     

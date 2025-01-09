@@ -1,6 +1,8 @@
 import json
+
 from fastapi import APIRouter,HTTPException, Form, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.database.db import get_db
 from src.entity.models import Post, Transformation, QRCode
 import requests
@@ -18,18 +20,18 @@ async def transform_image_with_cloudinary(
     db: AsyncSession = Depends(get_db),
 ):
     """
-    Transforms an image using Cloudinary and generates a QR code for the transformed image.
+    Transforms an image from Cloudinary with the specified effect and returns the transformed image with a QR code.
 
     Args:
         post_id (int): The ID of the post containing the image to transform.
-        effect (int): The effect to apply to the image. Choose 1 for grayscale or 2 for cartoon.
-        db (AsyncSession): The database session.
+        effect (int): The transformation effect to apply (1 for grayscale, 2 for cartoon). Defaults to a form field.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        ImageResponse: The transformed image URL and the QR code URL.
+        ImageResponse: The response containing the transformed image URL and QR code URL.
 
     Raises:
-        HTTPException: If the post is not found, the effect is invalid, or an error occurs during processing.
+        HTTPException: If the post is not found, an error occurs while fetching the image, an invalid effect is specified, or an error occurs during the transformation or uploading process.
     """
     # Retrieve the post from the database
     post = await db.get(Post, post_id)

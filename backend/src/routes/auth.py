@@ -19,14 +19,14 @@ router = APIRouter()
 @router.post("/register", response_model=UserResponse)
 async def register(user_create: UserCreate, db: AsyncSession = Depends(get_db)):
     """
-    Registers a new user.
+    Registers a new user in the system.
 
     Args:
-        user_create (UserCreate): The data for the new user.
-        db (AsyncSession): The database session.
+        user_create (UserCreate): The user creation data.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        UserResponse: The created user data.
+        UserResponse: The newly created user object.
 
     Raises:
         HTTPException: If the user is already registered.
@@ -45,17 +45,17 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)
 ):
     """
-    Authenticates a user and provides access and refresh tokens.
+    Authenticates a user and returns access and refresh tokens.
 
     Args:
-        form_data (OAuth2PasswordRequestForm): The login credentials.
-        db (AsyncSession): The database session.
+        form_data (OAuth2PasswordRequestForm): The form data containing username and password.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        Token: Access and refresh tokens.
+        Token: The access and refresh tokens.
 
     Raises:
-        HTTPException: If the credentials are incorrect.
+        HTTPException: If the username or password is incorrect.
     """
     user = await UserRepository.get_user_by_email(form_data.username, db)
     if not user or not verify_password(form_data.password, user.hashed_password):
@@ -74,17 +74,17 @@ async def login_for_access_token(
 @router.post("/refresh", response_model=Token)
 async def refresh_tokens(refresh_token: str, db: AsyncSession = Depends(get_db)):
     """
-    Refreshes access and refresh tokens.
+    Refreshes the access and refresh tokens using the provided refresh token.
 
     Args:
         refresh_token (str): The refresh token.
-        db (AsyncSession): The database session.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        Token: New access and refresh tokens.
+        Token: The new access and refresh tokens.
 
     Raises:
-        HTTPException: If the user is not found or the refresh token is invalid.
+        HTTPException: If the username or password is incorrect.
     """
     token_data = decode_access_token(refresh_token)
     user_repo = UserRepository(db)
@@ -109,18 +109,16 @@ async def update_avatar(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Updates the avatar for the current user.
+    Updates the avatar of the current user.
 
     Args:
-        file (UploadFile): The avatar picture file to upload.
-        current_user (User): The currently authenticated user.
-        db (AsyncSession): The database session.
+        file (UploadFile): The new avatar file.
+        current_user (User, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
-    Returns:
-        UserResponse: The updated user data.
+    Returns: UserResponse: The updated user object with the new avatar.
 
-    Raises:
-        HTTPException: If there is an error uploading the avatar.
+    Raises: HTTPException: If there is an error uploading the avatar.
     """
     try:
         avatar = await CloudinaryService.upload_image(file)
@@ -139,18 +137,18 @@ async def update_profile(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Updates the profile information of the current user.
+    Updates the profile of the current user.
 
     Args:
-        username (str, optional): The new username.
-        first_name (str, optional): The new first name.
-        last_name (str, optional): The new last name.
-        bio (str, optional): The new biography.
-        current_user (User): The currently authenticated user.
-        db (AsyncSession): The database session.
+        username (str, optional): The new username. Defaults to None.
+        first_name (str, optional): The new first name. Defaults to None.
+        last_name (str, optional): The new last name. Defaults to None.
+        bio (str, optional): The new bio. Defaults to None.
+        current_user (User, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        UserResponse: The updated user data.
+        UserResponse: The updated user object.
 
     Raises:
         HTTPException: If there is an error updating the profile.
@@ -162,30 +160,35 @@ async def update_profile(
         return updated_user
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error updating profile: {str(e)}")
+    
+@router.get("/users")
+async def get_all_users(db: AsyncSession = Depends(get_db)):
+    users = await UserRepository.get_all_users(db)
+    return users 
 
-@router.get("/my_info")
+@router.get("/me")
 async def get_my_data(user: UserResponse = Depends(get_current_user)):
     """
-    Gets information about the current authenticated user.
+    Retrieves information about the current user.
 
     Args:
-        user (UserResponse): The current authenticated user.
+        user (UserResponse, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
 
     Returns:
-        dict: A dictionary containing the user's role, username, and email.
+        dict: A dictionary containing the role, username, and email of the current user.
     """
     return {"role": user.role.name, "username": user.username, "email": user.email}
 
 @router.get("/users/{username}")
 async def get_user_profile(user: UserResponse = Depends(UserRepository.get_user_by_username)):
     """
-    Gets the profile of a user by their username.
+    Retrieves the profile of a user by their username.
 
     Args:
-        user (UserResponse): The user data.
+        user (UserResponse, optional): The user object retrieved by username. Defaults to dependency injection of UserRepository.get_user_by_username.
 
     Returns:
-        dict: A dictionary containing the user's profile details.
+        dict: A dictionary containing the profile information of the user.
     """
     return {
         "username": user.username,
@@ -209,16 +212,16 @@ async def change_role(
     Changes the role of a user.
 
     Args:
-        username (str): The username of the target user.
+        username (str): The username of the user whose role is to be changed.
         role_id (int): The ID of the new role.
-        db (AsyncSession): The database session.
-        user (User): The currently authenticated admin user.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
+        user (User, optional): The currently authenticated admin user. Defaults to dependency injection of RoleChecker([RoleEnum.admin]).
 
     Returns:
-        dict: A message indicating the role change success.
+        dict: A message indicating the role change.
 
     Raises:
-        HTTPException: If the user or role is not found.
+        HTTPException: If the user is not found or if the role ID is invalid.
     """
     user_repo = UserRepository(db)
     role_repo = RoleRepository(db)
@@ -236,15 +239,14 @@ async def change_role(
 @router.get("/current-admin")
 async def get_current_admin(user: User = Depends(get_current_admin)):
     """
-    Retrieves the current authenticated admin user.
+    Retrieves the currently authenticated admin user.
 
     Args:
-        user (User): The current authenticated admin user.
+        user (User, optional): The currently authenticated admin user. Defaults to dependency injection of get_current_admin.
 
     Returns:
-        User: The admin user data.
+        User: The currently authenticated admin user.
     """
-
     return user
 
 @router.post("/ban/{user_id}")
@@ -254,18 +256,18 @@ async def ban_user(
     session: AsyncSession = Depends(get_db)
 ):
     """
-    Bans a user by his/her ID.
+    Bans a user by setting their banned status to True.
 
     Args:
         user_id (int): The ID of the user to ban.
-        current_admin (User): The current authenticated admin user.
-        session (AsyncSession): The database session.
+        current_admin (User, optional): The currently authenticated admin user. Defaults to dependency injection of get_current_admin.
+        session (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        dict: A message indicating the ban success.
+        dict: A message indicating the user has been banned.
 
     Raises:
-        HTTPException: If the user is not found, banned, or an admin tries to ban themselves.
+        HTTPException: If the user is not found, if the admin attempts to ban themselves, or if the user is already banned.
     """
     async with session.begin():
         # Get the user to ban
@@ -290,20 +292,19 @@ async def unban_user(
     session: AsyncSession = Depends(get_db)
 ):
     """
-    Unbans a user by his/her ID.
+    Unbans a user by setting their banned status to False.
 
     Args:
         user_id (int): The ID of the user to unban.
-        current_admin (User): The current authenticated admin user.
-        session (AsyncSession): The database session.
+        current_admin (User, optional): The currently authenticated admin user. Defaults to dependency injection of get_current_admin.
+        session (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        dict: A message indicating the unban success.
+        dict: A message indicating the user has been unbanned.
 
     Raises:
-        HTTPException: If the user is not found, not banned, or an admin tries to unban himself/herself.
+        HTTPException: If the user is not found, if the admin attempts to unban themselves, or if the user is not banned.
     """
-
     async with session.begin():
         # Get the user to unban
         user_to_unban = await session.get(User, user_id)
@@ -327,17 +328,14 @@ async def logout(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Logs out the current user by blacklisting his/her token.
+    Logs out the user by blacklisting the provided token.
 
     Args:
         token (str): The token to blacklist.
-        db (AsyncSession): The database session.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        dict: A message indicating successful logout.
-
-    Raises:
-        HTTPException: If the token is invalid or already blacklisted.
+        dict: A message indicating successful logout. Raises: HTTPException: If the token is invalid, expired, or already blacklisted.
     """
     # Validate the token
     token_data = await decode_access_token(token)

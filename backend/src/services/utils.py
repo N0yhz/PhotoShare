@@ -159,7 +159,7 @@ async def get_current_user(token: str = Depends(oauth2_schema), db: AsyncSession
     except JWTError:
         raise credentials_exception
     
-    user = await get_user(db, token_data.email)
+    user = await get_user(db, email=token_data.email)
 
     if user.banned:
         raise HTTPException(status_code=403, detail="Your account is banned")

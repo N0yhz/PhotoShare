@@ -50,6 +50,7 @@ class PostOut(BaseModel):
     description: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+    tags: List[TagOut]
  
     model_config = ConfigDict(from_attributes = True, arbitrary_types_allowed=True)
 

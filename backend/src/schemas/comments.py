@@ -39,7 +39,7 @@ class CommentOut(BaseModel):
         content (str): The content of the comment.
         created_at (datetime): The timestamp when the comment was created.
         updated_at (datetime): The timestamp when the comment was last updated.
-        """
+    """
     id: int
     user_id: int
     post_id: int

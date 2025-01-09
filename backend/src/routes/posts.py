@@ -4,14 +4,13 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form
 from sqlalchemy import select
-from sqlalchemy.orm import Query, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
 
-from src.entity.models import Post, Tag, User, RoleEnum
+from src.entity.models import Tag, User, RoleEnum
 
-from src.schemas.tags import TagCreate, TagList, AddTags
+from src.schemas.tags import AddTags
 from src.schemas.posts import PostOut, PostUpdate, PostCreate, MessageResponse, PostTags
 
 from src.services.cloudinary import CloudinaryService
@@ -24,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-
 @router.post("/create", response_model=PostOut)
 async def create_post(
     file: UploadFile = File(...),
@@ -33,19 +31,19 @@ async def create_post(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Creates a new post with an uploaded image.
+    Creates a new post with an uploaded image and description.
 
     Args:
         file (UploadFile): The image file to upload.
-        description (str, optional): A description for the post.
-        db (AsyncSession): The database session.
-        current_user (User): The currently authenticated user.
+        description (str, optional): The description of the post. Defaults to None.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
+        current_user (User, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
 
     Returns:
-        PostOut: The created post.
+        PostOut: The newly created post.
 
     Raises:
-        HTTPException: If there is an error during post creation or file upload.
+        HTTPException: If an error occurs while creating the post.
     """
     try:
         cloudinary_url = await CloudinaryService.upload_image(file)
@@ -54,23 +52,21 @@ async def create_post(
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
-
 @router.get("/all_posts")
 async def get_posts(
     db: AsyncSession = Depends(get_db),
 ):
     """
-    Get all posts from the database.
+    Retrieves all posts from the database.
 
     Args:
-        db (AsyncSession): The database session.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        List[Post]: A list of all posts in the database.
+        List[Post]: A list of all posts.
     """
     posts = await PostRepository.get_all_posts(db)
     return posts
-
 
 @router.get("/", response_model=List[PostOut])
 async def get_posts(
@@ -78,11 +74,11 @@ async def get_posts(
     current_user: User = Depends(get_current_user)
 ):
     """
-    Gets all posts created by the current authenticated user.
+    Retrieves all posts created by the current user.
 
     Args:
-        db (AsyncSession): The database session.
-        current_user (User): The currently authenticated user.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
+        current_user (User, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
 
     Returns:
         List[PostOut]: A list of posts created by the current user.
@@ -90,21 +86,20 @@ async def get_posts(
     posts = await PostRepository.get_by_user(db, current_user.id)
     return posts
 
-
 @router.get("/{post_id}", response_model=PostOut)
 async def get_post(
     post_id: int,
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Gets a specific post by its ID, including its associated tags.
+    Retrieve a specific post by its ID, including its associated tags.
 
     Args:
-        post_id (int): The ID of the post.
-        db (AsyncSession): The database session.
+        post_id (int): The ID of the post to retrieve.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        PostOut: The post with its details.
+        PostOut: The post object if found, otherwise raises HTTPException.
 
     Raises:
         HTTPException: If the post is not found.
@@ -115,23 +110,22 @@ async def get_post(
     return post
 
 
-@router.post("/posts/{post_id}/tags", response_model=PostTags)
+@router.post("/{post_id}/tags", response_model=PostTags)
 async def add_tags_to_post(post_id: int, tags: AddTags, db: AsyncSession = Depends(get_db)):
     """
-    Add tags to a specific post.
+    Adds tags to a specific post.
 
     Args:
-        post_id (int): The ID of the post.
-        tags (AddTags): The tags to add to the post.
-        db (AsyncSession): The database session.
+        post_id (int): The ID of the post to add tags to.
+        tags (AddTags): The tags to add.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        PostTags: The updated post with its tags.
+        PostTags: The updated post with added tags.
 
     Raises:
-        HTTPException: If more than 5 tags are added or another error occurs.
+        HTTPException: If more than 5 tags are provided.
     """
-
     if len(tags.tags) > 5:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -140,6 +134,67 @@ async def add_tags_to_post(post_id: int, tags: AddTags, db: AsyncSession = Depen
 
     updated_post = await PostRepository.add_tags_to_post(db=db, post_id=post_id, tags=tags.tags)
     return updated_post
+
+@router.get('/by-tags/{tag_id}')
+async def get_posts_by_tag(
+    tag_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Retrieve posts associated with a specific tag.
+
+    This function fetches all posts that are tagged with the given tag ID.
+
+    Args:
+        tag_id (int): The ID of the tag to search for.
+        db (AsyncSession): The database session, injected by FastAPI.
+
+    Returns:
+        list: A list of posts associated with the specified tag.
+
+    Raises:
+        HTTPException: If the tag with the given ID is not found.
+    """
+    tag_result = await db.execute(select(Tag).where(Tag.id == tag_id))
+    tag = tag_result.scalars().first()
+
+    if not tag:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag not found")
+
+    posts = await PostRepository.get_posts_by_tag(db, tag_id)
+    return posts
+
+
+@router.post("/by-tags/{tag_name}")
+async def get_posts_by_tag_name(
+    tag_name: str,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Retrieve posts associated with a specific tag name.
+
+    This function fetches all posts that are tagged with the given tag name.
+
+    Args:
+        tag_name (str): The name of the tag to search for.
+        db (AsyncSession): The database session, injected by FastAPI.
+
+    Returns:
+        list: A list of posts associated with the specified tag name.
+
+    Raises:
+        HTTPException: If the tag with the given name is not found.
+    """
+    tag_result = await db.execute(select(Tag).where(Tag.name == tag_name))
+    tag = tag_result.scalars().first()
+
+    if not tag:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag not found")
+
+    posts = await PostRepository.get_posts_by_tag(db, tag.id)
+    return posts
+
+
 
 
 @router.put("/{post_id}", response_model=PostOut)
@@ -150,19 +205,19 @@ async def update_post(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Update the description of a specific post.
+    Updates the description of a specific post.
 
     Args:
         post_id (int): The ID of the post to update.
-        data (PostUpdate): The updated data for the post.
-        current_user (User): The currently authenticated user.
-        db (AsyncSession): The database session.
+        data (PostUpdate): The new description data.
+        current_user (User, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        PostOut: The updated post.
+        PostOut: The updated post object.
 
     Raises:
-        HTTPException: If the post is not found or the user is not authorized to update it.
+        HTTPException: If the post is not found or the user is not authorized to update the post.
     """
     post = await PostRepository.get_post(db, post_id)
 
@@ -178,7 +233,6 @@ async def update_post(
     )
     return updated_post
 
-
 @router.delete("/{post_id}", response_model=MessageResponse)
 async def delete_post(
     post_id: int,
@@ -186,18 +240,18 @@ async def delete_post(
     db: AsyncSession = Depends(get_db)
 ):
     """
-    Delete a specific post.
+    Deletes a specific post.
 
     Args:
         post_id (int): The ID of the post to delete.
-        current_user (User): The currently authenticated user.
-        db (AsyncSession): The database session.
+        current_user (User, optional): The currently authenticated user. Defaults to dependency injection of get_current_user.
+        db (AsyncSession, optional): The database session for executing queries. Defaults to dependency injection of get_db.
 
     Returns:
-        MessageResponse: A message indicating successful deletion.
+        MessageResponse: A message indicating successful deletion of the post.
 
     Raises:
-        HTTPException: If the post is not found or the user is not authorized to delete it.
+        HTTPException: If the post is not found or the user is not authorized to delete the post.
     """
     post = await PostRepository.get_post(db, post_id)
 
@@ -213,19 +267,18 @@ async def delete_post(
     else:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete post")
 
-
 @router.get("/secret_for_all")
 async def read_secret(
     user: User = Depends(RoleChecker([RoleEnum.user, RoleEnum.moderator, RoleEnum.admin])),
 ):
     """
-    Get a secret message for all authenticated users.
+    Retrieves a secret message for all authenticated users.
 
     Args:
-        user (User): The currently authenticated user.
+        user (User, optional): The currently authenticated user. Defaults to dependency injection of RoleChecker([RoleEnum.user, RoleEnum.moderator, RoleEnum.admin]).
 
     Returns:
-        dict: A secret message.
+        dict: A dictionary containing the secret message.
     """
     return {"message": "Secret message for all authenticated users"}
 
@@ -235,13 +288,13 @@ async def read_secret(
     user: User = Depends(RoleChecker([RoleEnum.moderator, RoleEnum.admin])),
 ):
     """
-    Get a secret message for moderators and admins.
+    Retrieves a secret message for moderators.
 
     Args:
-        user (User): The currently authenticated user.
+        user (User, optional): The currently authenticated user. Defaults to dependency injection of RoleChecker([RoleEnum.moderator, RoleEnum.admin]).
 
     Returns:
-        dict: A secret message.
+        dict: A dictionary containing the secret message.
     """
     return {"message": "Secret message for moderators"}
 
@@ -251,12 +304,11 @@ async def read_secret(
     user: User = Depends(RoleChecker([RoleEnum.admin])),
 ):
     """
-    Get a secret message for admins only.
+    Retrieves a secret message for admin users.
 
     Args:
-        user (User): The currently authenticated admin user.
+        user (User, optional): The currently authenticated user. Defaults to dependency injection of RoleChecker([RoleEnum.admin]).
 
-    Returns:
-        dict: A secret message.
+    Returns: dict: A dictionary containing the secret message.
     """
     return {"message": "Secret message for admin"}
