@@ -8,7 +8,6 @@ Welcome to PhotoShare - a REST API project built by The Byte Brygade Team
 - [Installation](#installation)
 - [Backend Setup](#backend-setup)
 - [Frontend Setup](#frontend-setup)
-- [Usage](#usage)
 <br/>
 
 ## ⚙ Technologies used
@@ -31,7 +30,7 @@ Welcome to PhotoShare - a REST API project built by The Byte Brygade Team
 
 <br/>
 
-## 🛠 Installation
+## Installation
 Instruction on how to install and set up the project.
 
 Before you begin, make sure you have the following configuration installed on your system:
@@ -145,38 +144,22 @@ Now you can freeely access all the routes to test.
 
 ## 📝Frontend Setup
 
-### Set up Next.js
-Before running the server make sure that you have installed **pnpm** manager
-If not you can do run this command in terminal:
+
+### 🐳 Docker Setup
+You can also run the PhotoShare Frontend using Docker. First, build the Docker image using the following command:
 ```
-npm install -g pnpm
+docker-compose build -t fe-photoshare
 ```
+This command builds a Docker image based on the instructions in the docker-compose.yml and Dockerfile
 
-### Run the page
-If you stay at folder **frotnend/** direct to -> **photshare-app/**
-Run the server using this following command:
+#### Run the Docker Container
+Once the image is built, you can run the application inside a Docker container using the following command:
 ```
-pnpm run dev
+docker-compose up -d
 ```
-After that you can now access the WebApplication at `http://localhost:3000` or `http://127.0.0.1:3000`
+This command runs all project images in a detached mode (`-d`)
 
-## 📜Usage
-- Create a new account by clicking **Register** on the right top
-- After that you can login to the Phortoshare-web, then you have full access
-- You can create a new post by uploading a new image in **Gallery or Post Edit**
-- If you want to add **tags** to your post, you can access it by clicking on your post and there would an input area. But the limit is **5 tags/post**
-- In the **Gallery** you can access to all posts on the web from every user, it generates like an album only "images" no desctiptions.
-- **Explore section**, here you can search or filter the posts by tags. On this page you can also create a new tag if you want
-- For the web there is **Image Edit** section where you can add filters to any post you like. It will generate you the **preview, link and qr-code**
-- **Post Edit** section here you can edit your post description or even delete the post.
-- By clicking on your avatar in the right top corner, you can accees to **settings or profile**
-- **Profile**, on this page it will show all your data and posts
-- In **Settings** you can change your "username, first_name, last_name, bio"
-
-#### Lastly, always stay positive - share your beautiful memories with others.
-
-
-
+After that you can now access the WebApplication `http://localhost:3000`
 
 ### 👨‍💻 Creators
 
