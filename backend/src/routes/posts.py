@@ -4,14 +4,13 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File, Form
 from sqlalchemy import select
-from sqlalchemy.orm import Query, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.database.db import get_db
 
-from src.entity.models import Post, Tag, User, RoleEnum
+from src.entity.models import Tag, User, RoleEnum
 
-from src.schemas.tags import TagCreate, TagList, AddTags
+from src.schemas.tags import AddTags
 from src.schemas.posts import PostOut, PostUpdate, PostCreate, MessageResponse, PostTags
 
 from src.services.cloudinary import CloudinaryService
@@ -70,7 +69,7 @@ async def get_post(
     return post
 
 
-@router.post("/posts/{post_id}/tags", response_model=PostTags)
+@router.post("/{post_id}/tags", response_model=PostTags)
 async def add_tags_to_post(post_id: int, tags: AddTags, db: AsyncSession = Depends(get_db)):
     if len(tags.tags) > 5:
         raise HTTPException(
@@ -80,6 +79,35 @@ async def add_tags_to_post(post_id: int, tags: AddTags, db: AsyncSession = Depen
 
     updated_post = await PostRepository.add_tags_to_post(db=db, post_id=post_id, tags=tags.tags)
     return updated_post
+
+@router.get('/by-tags/{tag_id}')
+async def get_posts_by_tag(
+    tag_id: int,
+    db: AsyncSession = Depends(get_db)
+):
+    tag_result = await db.execute(select(Tag).where(Tag.id == tag_id))
+    tag = tag_result.scalars().first()
+
+    if not tag:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag not found")
+    
+    posts = await PostRepository.get_posts_by_tag(db, tag_id)
+    return posts
+
+@router.post("/by-tags/{tag_name}")
+async def get_posts_by_tag_name(
+    tag_name: str,
+    db: AsyncSession = Depends(get_db)
+):
+    tag_result = await db.execute(select(Tag).where(Tag.name == tag_name))
+    tag = tag_result.scalars().first()
+    
+    if not tag:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag not found")
+    
+    posts = await PostRepository.get_posts_by_tag(db, tag.id)
+    return posts
+
 
 
 @router.put("/{post_id}", response_model=PostOut)

@@ -61,7 +61,7 @@ async def update_comment(
     )
     return updated_comment
 
-@router.delete("/comments/{comment_id}", response_model=dict)
+@router.delete("/{comment_id}", response_model=dict)
 async def delete_comment(
     comment_id: int,
     current_user: User = Depends(get_current_user),

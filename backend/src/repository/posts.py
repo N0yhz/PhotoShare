@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.entity.models import Post, Tag, Transformation
+from src.entity.models import Post, Tag
 from src.schemas.posts import PostCreate
 
 
@@ -48,7 +48,17 @@ class PostRepository():
             .where(Post.user_id == user_id)
         )
         return result.scalars().all()
-
+    
+    @staticmethod
+    async def get_posts_by_tag(db: AsyncSession, tag_id: int) -> List[Post]:
+        result = await db.execute(
+            select(Post)
+            .options(selectinload(Post.tags))
+            .join(Post.tags)
+            .where(Tag.id == tag_id)
+        )
+        return result.scalars().all()
+    
     @staticmethod
     async def update_post(db: AsyncSession, post_id: int, description: str):
         db_post = await db.get(Post, post_id)
