@@ -9,11 +9,12 @@ from src.services.pass_utils import get_password_hash
 from src.database.db import get_db
 
 class UserRepository:
-    def __init__(self, session):
-        self.session = session
     """
     Repository class for managing user-related database operations.
     """
+    def __init__(self, session):
+        self.session = session
+    
     async def create_user(self, user_create: UserCreate):
         """
         Creates a new user in the database with a hashed password and assigns an appropriate role.
@@ -28,7 +29,7 @@ class UserRepository:
         Raises:
             SQLAlchemyError: If there is an error committing the transaction to the database.
         """
-         hashed_password = get_password_hash(user_create.password)
+        hashed_password = get_password_hash(user_create.password)
 
         existing_users = await self.session.execute(select(User).limit(1))
         users_exist = existing_users.scalars().first() is not None
