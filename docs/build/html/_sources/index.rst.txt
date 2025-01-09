@@ -10,6 +10,10 @@ Welcome to PhotoShare - a REST API project built by The Byte Brygade Team
 
 .. toctree::
    :maxdepth: 4
-   :caption: Contents:
+   :caption: Modules:
 
    modules
+   repository
+   routes
+   schemas
+   services

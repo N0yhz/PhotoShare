@@ -7,7 +7,7 @@ Submodules
 routes.auth module
 ------------------
 
-.. automodule:: routes.auth
+.. automodule:: backend.src.routes.auth
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ routes.auth module
 routes.cloudinary\_routes module
 --------------------------------
 
-.. automodule:: routes.cloudinary_routes
+.. automodule:: backend.src.routes.cloudinary_routes
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ routes.cloudinary\_routes module
 routes.comments module
 ----------------------
 
-.. automodule:: routes.comments
+.. automodule:: backend.src.routes.comments
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ routes.comments module
 routes.posts module
 -------------------
 
-.. automodule:: routes.posts
+.. automodule:: backend.src.routes.posts
    :members:
    :undoc-members:
    :show-inheritance:
@@ -39,7 +39,7 @@ routes.posts module
 routes.tags module
 ------------------
 
-.. automodule:: routes.tags
+.. automodule:: backend.src.routes.tags
    :members:
    :undoc-members:
    :show-inheritance:
@@ -47,7 +47,7 @@ routes.tags module
 Module contents
 ---------------
 
-.. automodule:: routes
+.. automodule:: backend.src.routes
    :members:
    :undoc-members:
    :show-inheritance:

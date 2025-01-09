@@ -7,7 +7,7 @@ Submodules
 schemas.auth module
 -------------------
 
-.. automodule:: schemas.auth
+.. automodule:: backend.src.schemas.auth
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ schemas.auth module
 schemas.cloudinary\_qr module
 -----------------------------
 
-.. automodule:: schemas.cloudinary_qr
+.. automodule:: backend.src.schemas.cloudinary_qr
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ schemas.cloudinary\_qr module
 schemas.comments module
 -----------------------
 
-.. automodule:: schemas.comments
+.. automodule:: backend.src.schemas.comments
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ schemas.comments module
 schemas.posts module
 --------------------
 
-.. automodule:: schemas.posts
+.. automodule:: backend.src.schemas.posts
    :members:
    :undoc-members:
    :show-inheritance:
@@ -39,7 +39,7 @@ schemas.posts module
 schemas.tags module
 -------------------
 
-.. automodule:: schemas.tags
+.. automodule:: backend.src.schemas.tags
    :members:
    :undoc-members:
    :show-inheritance:
@@ -47,7 +47,7 @@ schemas.tags module
 Module contents
 ---------------
 
-.. automodule:: schemas
+.. automodule:: backend.src.schemas
    :members:
    :undoc-members:
    :show-inheritance:

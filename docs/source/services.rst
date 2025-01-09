@@ -7,7 +7,7 @@ Submodules
 services.cloudinary module
 --------------------------
 
-.. automodule:: services.cloudinary
+.. automodule:: backend.src.services.cloudinary
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ services.cloudinary module
 services.pass\_utils module
 ---------------------------
 
-.. automodule:: services.pass_utils
+.. automodule:: backend.src.services.pass_utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ services.pass\_utils module
 services.qr\_code module
 ------------------------
 
-.. automodule:: services.qr_code
+.. automodule:: backend.src.services.qr_code
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ services.qr\_code module
 services.utils module
 ---------------------
 
-.. automodule:: services.utils
+.. automodule:: backend.src.services.utils
    :members:
    :undoc-members:
    :show-inheritance:
@@ -39,7 +39,7 @@ services.utils module
 Module contents
 ---------------
 
-.. automodule:: services
+.. automodule:: backend.src.services
    :members:
    :undoc-members:
    :show-inheritance:

@@ -7,7 +7,7 @@ Submodules
 repository.auth module
 ----------------------
 
-.. automodule:: repository.auth
+.. automodule:: backend.src.repository.auth
    :members:
    :undoc-members:
    :show-inheritance:
@@ -15,7 +15,7 @@ repository.auth module
 repository.comments module
 --------------------------
 
-.. automodule:: repository.comments
+.. automodule:: backend.src.repository.comments
    :members:
    :undoc-members:
    :show-inheritance:
@@ -23,7 +23,7 @@ repository.comments module
 repository.posts module
 -----------------------
 
-.. automodule:: repository.posts
+.. automodule:: backend.src.repository.posts
    :members:
    :undoc-members:
    :show-inheritance:
@@ -31,7 +31,7 @@ repository.posts module
 Module contents
 ---------------
 
-.. automodule:: repository
+.. automodule:: backend.src.repository
    :members:
    :undoc-members:
    :show-inheritance:

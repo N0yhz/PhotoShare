@@ -8,7 +8,7 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../backend/src'))
+sys.path.insert(0, os.path.abspath('"/Users/macos/Documents/GitHub/PhotoShare/backend/src"'))
 
 project = 'PhotoShare'
 copyright = '2025, The Byte Brigade'
@@ -27,7 +27,13 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = []
 
-
+# Autodoc-specific options
+autodoc_default_options = {
+    'members': True,
+    'undoc-members': True,
+    'show-inheritance': True,
+}
+autodoc_inherit_docstrings = True
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -39,3 +45,12 @@ html_theme = 'sphinx_rtd_theme'
 #     "navigation_depth": -1
 # }
 html_static_path = ['_static']
+
+napoleon_google_docstring = True
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = True
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = True
+napoleon_use_ivar = False
+napoleon_use_rtype = True
+napoleon_use_param = True

@@ -5,29 +5,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="895fbddb-d236-46af-a90c-ce83408cb2d5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/backend/src/repository/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/routes/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/schemas/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/backend/src/services/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/backend/poetry.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/backend/pyproject.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/repository/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/repository/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/repository/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/repository/comments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/repository/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/repository/posts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/routes/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/routes/cloudinary_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/cloudinary_routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/routes/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/comments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/routes/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/posts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/routes/tags.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/routes/tags.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/schemas/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/auth.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/schemas/cloudinary_qr.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/cloudinary_qr.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/schemas/comments.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/comments.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/schemas/posts.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/posts.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/schemas/tags.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/schemas/tags.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/services/cloudinary.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/cloudinary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/services/pass_utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/pass_utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/services/qr_code.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/qr_code.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/src/services/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/services/utils.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/backend/src/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/index.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/index.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/repository.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/repository.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/routes.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/routes.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/schemas.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/schemas.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/doctrees/services.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/doctrees/services.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_modules/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_modules/schemas/cloudinary_qr.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_modules/schemas/comments.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_modules/schemas/posts.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_modules/schemas/tags.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/index.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/index.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/repository.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/repository.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/routes.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/routes.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/schemas.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/schemas.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/_sources/services.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/_sources/services.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/modules.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/modules.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/py-modindex.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/repository.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/routes.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/routes.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/schemas.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/schemas.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/search.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/searchindex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/build/html/services.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/build/html/services.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/conf.py" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/conf.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/index.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/index.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/repository.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/repository.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/routes.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/routes.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/schemas.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/schemas.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/source/services.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/source/services.rst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.lock" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pyproject.toml" beforeDir="false" afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,6 +82,11 @@
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/docs/source" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
