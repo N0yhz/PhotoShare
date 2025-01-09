@@ -37,15 +37,5 @@ async def create_tag(tag: TagCreate, session: AsyncSession = Depends(get_db)):
 
 @router.get("/all")
 async def get_all_tags(session: AsyncSession = Depends(get_db)):
-    """
-    Retrieves all tags from the database.
-
-    Args:
-        session (AsyncSession, optional): The database session for executing queries. 
-            Defaults to dependency injection of get_db.
-
-    Returns:
-        list: A list of all Tag objects in the database.
-    """
     tags = await session.execute(select(Tag))
     return tags.scalars().all()

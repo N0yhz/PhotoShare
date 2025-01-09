@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.entity.models import Comment
+from src.entity.models import Comment, Post
 from src.schemas.comments import CommentCreate
 from src.services.utils import is_mod_or_admin
 

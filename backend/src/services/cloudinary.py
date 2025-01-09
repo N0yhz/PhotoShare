@@ -16,23 +16,8 @@ cloudinary.config(
 )
 
 class CloudinaryService:
-    """
-    A service class for interacting with Cloudinary API to upload and transform images.
-    """
     @staticmethod
     async def upload_image(file: UploadFile) -> str:
-        """
-        Uploads an image to Cloudinary.
-
-        Args:
-            file (UploadFile): The file to be uploaded.
-
-        Returns:
-            str: The secure URL of the uploaded image.
-
-        Raises:
-            HTTPException: If an error occurs during the upload process.
-        """
         try:
             result = await asyncio.to_thread(cloudinary.uploader.upload,file.file, folder="photoshare")
             logger.info("Image uploaded successfully")
@@ -42,19 +27,6 @@ class CloudinaryService:
 
     @staticmethod
     async def upload_image_to_transform(file_path: str, transformation: dict = None) -> str:
-        """
-        Uploads an image to Cloudinary with optional transformations.
-
-        Args:
-            file_path (str): The path to the image file to be uploaded.
-            transformation (dict, optional): A dictionary of transformations to apply to the image.
-
-        Returns:
-            str: The secure URL of the uploaded image with transformations.
-
-        Raises:
-            HTTPException: If an error occurs during the upload process.
-        """
         try:
             with open(file_path, "rb") as f:
                 result = await asyncio.to_thread(
