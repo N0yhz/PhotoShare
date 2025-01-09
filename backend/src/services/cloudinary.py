@@ -4,7 +4,7 @@ import cloudinary
 import cloudinary.uploader
 
 from fastapi import HTTPException, UploadFile
-from src.conf.config import config
+from backend.src.conf.config import config
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
