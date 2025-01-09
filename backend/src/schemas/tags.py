@@ -8,11 +8,12 @@ class TagBase(BaseModel):
 class TagCreate(TagBase):
     pass
 
+
 class TagOut(BaseModel):
     id: int = Field(gt=0)
     name: str
 
-    model_config = ConfigDict(from_attributes = True)
+    model_config = ConfigDict(from_attributes=True)
 
 class AddTags(BaseModel):
     tags: List[str]
