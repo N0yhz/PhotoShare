@@ -9,6 +9,9 @@ from src.services.pass_utils import get_password_hash
 from src.database.db import get_db
 
 class UserRepository:
+    """
+    Repository class for managing user-related database operations.
+    """
     async def create_user(user_create: UserCreate, db: AsyncSession):
         """
         Creates a new user in the database with a hashed password and assigns an appropriate role.
@@ -86,7 +89,7 @@ class UserRepository:
         result = await db.execute(select(User))
         return result.scalars().all()
     
-    async def activate_user(self, user: User):
+    async def activate_user(db: AsyncSession, user: User):
         """
         Activates a user's account.
 
@@ -100,11 +103,11 @@ class UserRepository:
             SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         user.is_active = True
-        self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
         
-    async def change_user_role(self, user: User, role: Role):
+    async def change_user_role(db: AsyncSession, user: User, role: Role):
         """
         Changes the role of a user.
 
@@ -119,9 +122,9 @@ class UserRepository:
             SQLAlchemyError: If there is an error committing the transaction to the database.
         """
         user.role_id = role.id
-        self.session.add(user)
-        await self.session.commit()
-        await self.session.refresh(user)
+        db.add(user)
+        await db.commit()
+        await db.refresh(user)
         
         return {"message": f"Role of {user.username} changed successfully to {user.role.name}"}
     

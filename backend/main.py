@@ -14,7 +14,6 @@ app.include_router(cloudinary_routes.router, prefix="/api/transform", tags=["Tra
 
 origins = ["http://localhost:3000",
            "http://127.0.0.1:3000",
-           "http://192.168.178.21:3000"
            ]
 
 app.add_middleware(

@@ -10,6 +10,9 @@ from src.schemas.posts import PostCreate
 
 
 class PostRepository():
+    """
+    Repository class for managing post-related database operations.
+    """
     @staticmethod
     async def create_post(db: AsyncSession, post: PostCreate, user_id: int):
         """

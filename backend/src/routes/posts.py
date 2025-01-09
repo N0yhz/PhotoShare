@@ -140,28 +140,60 @@ async def get_posts_by_tag(
     tag_id: int,
     db: AsyncSession = Depends(get_db)
 ):
+    """
+    Retrieve posts associated with a specific tag.
+
+    This function fetches all posts that are tagged with the given tag ID.
+
+    Args:
+        tag_id (int): The ID of the tag to search for.
+        db (AsyncSession): The database session, injected by FastAPI.
+
+    Returns:
+        list: A list of posts associated with the specified tag.
+
+    Raises:
+        HTTPException: If the tag with the given ID is not found.
+    """
     tag_result = await db.execute(select(Tag).where(Tag.id == tag_id))
     tag = tag_result.scalars().first()
 
     if not tag:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag not found")
-    
+
     posts = await PostRepository.get_posts_by_tag(db, tag_id)
     return posts
+
 
 @router.post("/by-tags/{tag_name}")
 async def get_posts_by_tag_name(
     tag_name: str,
     db: AsyncSession = Depends(get_db)
 ):
+    """
+    Retrieve posts associated with a specific tag name.
+
+    This function fetches all posts that are tagged with the given tag name.
+
+    Args:
+        tag_name (str): The name of the tag to search for.
+        db (AsyncSession): The database session, injected by FastAPI.
+
+    Returns:
+        list: A list of posts associated with the specified tag name.
+
+    Raises:
+        HTTPException: If the tag with the given name is not found.
+    """
     tag_result = await db.execute(select(Tag).where(Tag.name == tag_name))
     tag = tag_result.scalars().first()
-    
+
     if not tag:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Tag not found")
-    
+
     posts = await PostRepository.get_posts_by_tag(db, tag.id)
     return posts
+
 
 
 
