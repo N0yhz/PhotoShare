@@ -6,17 +6,17 @@ from fastapi import APIRouter, HTTPException, status, Depends, UploadFile, File,
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.database.db import get_db
+from src.database.db import get_db
 
 from src.entity.models import Tag, User, RoleEnum
 
 from src.schemas.tags import AddTags
 from src.schemas.posts import PostOut, PostUpdate, PostCreate, MessageResponse, PostTags
 
-from backend.src.services.cloudinary import CloudinaryService
-from backend.src.services.utils import get_current_user, RoleChecker
+from src.services.cloudinary import CloudinaryService
+from src.services.utils import get_current_user, RoleChecker
 
-from backend.src.repository.posts import PostRepository
+from src.repository.posts import PostRepository
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

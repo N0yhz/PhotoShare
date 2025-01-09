@@ -3,10 +3,10 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.schemas.auth import UserCreate
-from backend.src.entity.models import User, RoleEnum, Role
-from backend.src.services.pass_utils import get_password_hash
-from backend.src.database.db import get_db
+from src.schemas.auth import UserCreate
+from src.entity.models import User, RoleEnum, Role
+from src.services.pass_utils import get_password_hash
+from src.database.db import get_db
 
 class UserRepository:
     async def create_user(user_create: UserCreate, db: AsyncSession):

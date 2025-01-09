@@ -2,12 +2,12 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.database.db import get_db
-from backend.src.repository import comments as comments_repo
-from backend.src.repository.posts import PostRepository
-from backend.src.schemas.comments import CommentOut, CommentCreate, CommentUpdate
-from backend.src.entity.models import User, RoleEnum
-from backend.src.services.utils import get_current_user
+from src.database.db import get_db
+from src.repository import comments as comments_repo
+from src.repository.posts import PostRepository
+from src.schemas.comments import CommentOut, CommentCreate, CommentUpdate
+from src.entity.models import User, RoleEnum
+from src.services.utils import get_current_user
 
 router = APIRouter()
 

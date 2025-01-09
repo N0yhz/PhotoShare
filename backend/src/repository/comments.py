@@ -5,9 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.entity.models import Comment, Post
-from backend.src.schemas.comments import CommentCreate
-from backend.src.services.utils import is_mod_or_admin
+from src.entity.models import Comment, Post
+from src.schemas.comments import CommentCreate
+from src.services.utils import is_mod_or_admin
 
 async def create_comment(
         db: AsyncSession,

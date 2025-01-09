@@ -3,12 +3,12 @@ import json
 from fastapi import APIRouter,HTTPException, Form, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.database.db import get_db
-from backend.src.entity.models import Post, Transformation, QRCode
+from src.database.db import get_db
+from src.entity.models import Post, Transformation, QRCode
 import requests
-from backend.src.services.cloudinary import CloudinaryService
-from backend.src.services.qr_code import generate_qr_code
-from backend.src.schemas.cloudinary_qr import ImageResponse
+from src.services.cloudinary import CloudinaryService
+from src.services.qr_code import generate_qr_code
+from src.schemas.cloudinary_qr import ImageResponse
 from pathlib import Path
 
 router = APIRouter()

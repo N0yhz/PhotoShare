@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from backend.src.database.db import get_db
-from backend.src.entity.models import Tag
-from backend.src.schemas.tags import TagOut, TagCreate
+from src.database.db import get_db
+from src.entity.models import Tag
+from src.schemas.tags import TagOut, TagCreate
 
 router = APIRouter()
 
