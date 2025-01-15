@@ -175,17 +175,14 @@ After that you can now access the WebApplication at `http://localhost:3000` or `
 
 #### Lastly, always stay positive - share your beautiful memories with others.
 
-
-
-
 ### 👨‍💻 Creators
 
 - [Project Manager - Vladyslav Babenko](https://github.com/vlad-bb)
-- [TeamLead - Tunh Zyonh Vu](https://github.com/N0yhz)
+- [TeamLead + Frontend - Tunh Zyonh Vu](https://github.com/N0yhz)
 - [Scrum Master - Stanislav](https://github.com/Nimris)
 - [Developer - Pavlo Dovbui](https://github.com/pavlodubovyi)
-- [Developer - Helya](https://github.com/Helya-B)
-- [Developer - Tatiana](https://github.com/Tig-13)
+- [Developer - Olga Bolschakov](https://github.com/Helya-B)
+- [Developer - Tatiana Shepetukh ](https://github.com/Tig-13)
 - [Developer - Roman Harbaż](https://github.com/RHA1705)
 
 ## 🤝 Contributing
