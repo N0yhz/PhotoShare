@@ -178,7 +178,7 @@ After that you can now access the WebApplication at `http://localhost:3000` or `
 ### 👨‍💻 Creators
 
 - [Project Manager - Vladyslav Babenko](https://github.com/vlad-bb)
-- [TeamLead + Frontend - Tunh Zyonh Vu](https://github.com/N0yhz)
+- [TeamLead + Fullstack - Tunh Zyonh Vu](https://github.com/N0yhz)
 - [Scrum Master - Stanislav](https://github.com/Nimris)
 - [Developer - Pavlo Dovbui](https://github.com/pavlodubovyi)
 - [Developer - Olga Bolschakov](https://github.com/Helya-B)
